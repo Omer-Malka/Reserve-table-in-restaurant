@@ -30,7 +30,7 @@ public  class OperationsServiceImplementation implements OperationsService {
 	private OperationHandler operationHandler;
 	private ObjectMapper jackson;
 	private CheckerHelper checker;
-	
+
 	@Autowired	
 	public OperationsServiceImplementation(OperationHandler operationHandler) {
 		super();
@@ -38,7 +38,7 @@ public  class OperationsServiceImplementation implements OperationsService {
 		this.checker = new CheckerHelper();
 		this.jackson = new ObjectMapper();
 	}
-	
+
 	@Value("${spring.application.name: 2021b.lidar.ben.david}")
 	public void setName(String name) {
 		this.name = name;
@@ -48,17 +48,17 @@ public  class OperationsServiceImplementation implements OperationsService {
 	@Transactional
 	public Object invokeOperation(OperationBoundary operation) {
 		//check input item boundary
-				if(!this.checker.checkOperationId(operation.getOperationId())) {
-					throw new RuntimeException("id can not be null");
-				}
-				//create new entity ,fill server's fields and save
-				OperationEntity entity = this.convertToEntity(operation);
+		if(!this.checker.checkOperationId(operation.getOperationId())) {
+			throw new RuntimeException("id can not be null");
+		}
+		//create new entity ,fill server's fields and save
+		OperationEntity entity = this.convertToEntity(operation);
 
-				//generate id + timestamp
-				entity.setCreatedTimestamp(new Date());
-				entity.setOperationId(this.name.concat("@").concat(UUID.randomUUID().toString()));
-				//insert to db
-				return this.convertToBoundary(this.operationHandler.save(entity));
+		//generate id + timestamp
+		entity.setCreatedTimestamp(new Date());
+		entity.setOperationId(this.name.concat("@").concat(UUID.randomUUID().toString()));
+		//insert to db
+		return this.convertToBoundary(this.operationHandler.save(entity));
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public  class OperationsServiceImplementation implements OperationsService {
 		//insert to db
 		return this.convertToBoundary(this.operationHandler.save(entity));
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
@@ -84,7 +84,7 @@ public  class OperationsServiceImplementation implements OperationsService {
 		if(allEntities == null) {
 			throw new RuntimeException("No operation to return");
 		}
-		
+
 		else {
 			//covert them to boundaries and add to the array
 			for (OperationEntity operation : allEntities) {				
@@ -118,7 +118,7 @@ public  class OperationsServiceImplementation implements OperationsService {
 	@Transactional
 	public void deleteAllOperations(String adminSpace, String adminEmail) {
 		this.operationHandler.deleteAll();
-		
+
 	}
 	private String marshall(Object value) {
 		try {
