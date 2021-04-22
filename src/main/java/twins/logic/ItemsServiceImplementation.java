@@ -6,16 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
 import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import twins.boundaries.CreatedByBoundary;
 import twins.boundaries.ItemBoundary;
 import twins.boundaries.ItemIdBoundary;
@@ -47,7 +43,6 @@ public class ItemsServiceImplementation implements ItemsService{
 	
 	@PostConstruct
 	public void init() {
-		System.err.println("name: "+this.name);
 	}
 	
 	@Override
@@ -79,13 +74,18 @@ public class ItemsServiceImplementation implements ItemsService{
 	@Override
 	@Transactional
 	public void updateItem(String userSpace, String userEmail, String itemSpace, String itemId, ItemBoundary update) {
-		Optional<ItemEntity> itemOp = this.itemHandler.findById(itemId);
+		String newItemId = itemSpace + "@" + itemId;
+		Optional<ItemEntity> itemOp = this.itemHandler.findById(newItemId);
 		if(itemOp.isPresent() 
 				&& this.checker.checkInputString(itemId)
 				&& this.checker.checkInputString(update.getName()) 
 				&& this.checker.checkInputString(update.getType())) {
 			update.setItemId(new ItemIdBoundary(this.name, itemId));
 			ItemEntity toUpdate = this.convertToEntity(update);
+			toUpdate.setUserSpace(itemOp.get().getUserSpace());
+			toUpdate.setUserEmail(itemOp.get().getUserEmail());
+			//generate id + timestamp
+			toUpdate.setItemId(itemOp.get().getItemId());
 			toUpdate.setCreatedTimestamp(itemOp.get().getCreatedTimestamp());
 			this.itemHandler.save(toUpdate);
 		}
@@ -111,7 +111,8 @@ public class ItemsServiceImplementation implements ItemsService{
 	@Transactional(readOnly = true)
 	public ItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId) {
 		// find item entity by id
-		Optional<ItemEntity> itemOp = this.itemHandler.findById(itemId);
+		String newItemId = itemSpace + "@" + itemId;
+		Optional<ItemEntity> itemOp = this.itemHandler.findById(newItemId);
 		//if it not empty convert to boundary and return
 		if(itemOp.isPresent() 
 				&& this.checker.checkInputString(itemId)) {

@@ -48,7 +48,7 @@ public class ItemControllerTests {
 	}
 	
 	@Test
-	public void testPostItemReturns2xxStatusWithSameItenReturned() throws Exception {
+	public void testPostItemReturns2xxStatusWithSameItemReturned() throws Exception {
 		//GIVEN the server is up
 		//Do nothing
 		
@@ -73,8 +73,8 @@ public class ItemControllerTests {
 		item.setType(TEST_VALUE);
 		ItemBoundary response = this.restTemplate
 				.postForObject(this.url, item, ItemBoundary.class);
-		
-		ItemBoundary actual = this.restTemplate.getForObject(this.url + "/test/{id}", ItemBoundary.class, response.getItemId());
+		ItemBoundary actual = this.restTemplate.getForObject(this.url + "/{itemSpace}/{itemId}", 
+				ItemBoundary.class, response.getItemId().getSpace(), response.getItemId().getId());
 		assertThat(actual).isNotNull();
 		assertThat(actual.getName()).isEqualTo(item.getName());
 		assertThat(actual.getType()).isEqualTo(item.getType());
@@ -92,13 +92,16 @@ public class ItemControllerTests {
 		update.setName(TEST_VALUE + "1");
 		update.setType(TEST_VALUE+ "1");
 		
-		this.restTemplate.put(this.url + "/test/{id}", update, item.getItemId());
+		this.restTemplate.put(this.url + "/{itemSpace}/{itemId}", 
+				update, item.getItemId().getSpace(), item.getItemId().getId());
 		
-		assertThat(this.restTemplate.getForObject(this.url+"/test/{id}", ItemBoundary.class, item.getItemId()).getName())
+		assertThat(this.restTemplate.getForObject(this.url + "/{itemSpace}/{itemId}", 
+				ItemBoundary.class, item.getItemId().getSpace(), item.getItemId().getId()).getName())
 			.isEqualTo(update.getName())
 			.isNotEqualTo(item.getName());
 		
-		assertThat(this.restTemplate.getForObject(this.url+"/test/{id}", ItemBoundary.class, item.getItemId()).getType())
+		assertThat(this.restTemplate.getForObject(this.url + "/{itemSpace}/{itemId}", 
+				ItemBoundary.class, item.getItemId().getSpace(), item.getItemId().getId()).getType())
 		.isEqualTo(update.getType())
 		.isNotEqualTo(item.getType());
 		
