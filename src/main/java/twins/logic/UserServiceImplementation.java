@@ -75,6 +75,7 @@ public class UserServiceImplementation implements UsersService{
 		Optional<UserEntity> entity=this.userHandler.findById(userSpace+"%"+userEmail);
 		if (entity.isPresent()) {
 			update.setUserId(new UserIdBoundary(userSpace,userEmail));
+			
 			UserEntity updatedEntity= this.convertToEntity(update);
 			this.userHandler.save(updatedEntity);
 			
@@ -111,7 +112,7 @@ public class UserServiceImplementation implements UsersService{
 	private UserEntity convertToEntity(UserBoundary user) {
 		UserEntity entity =new UserEntity();
 		entity.setAvatar(user.getAvatar());
-		entity.setRole(entity.getRole());
+		entity.setRole(user.getRole());
 		entity.setUserName(user.getUserName());
 		entity.setUserid(user.getUserId().getSpace()+"%"+user.getUserId().getEmail());
 		

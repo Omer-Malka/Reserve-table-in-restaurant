@@ -42,6 +42,8 @@ public class UserController {
 		
 		UserIdBoundary userid=new UserIdBoundary();
 		userid.setEmail(userDetails.getEmail());
+		
+		//need to pus space in here
 		UserBoundary userBou=new UserBoundary(userid,userDetails.getRole()
 				,userDetails.getUserName(),userDetails.getAvatar());
 				

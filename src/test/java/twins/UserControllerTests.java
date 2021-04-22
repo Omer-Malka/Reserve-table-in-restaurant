@@ -123,6 +123,7 @@ public class UserControllerTests {
 		UserBoundary response=this.restTemplet.postForObject(this.url,newUser, UserBoundary.class);
 		//when
 		UserBoundary update=new UserBoundary();
+		
 		update.setUserName("new_test");
 		update.setRole("new_role");
 		update.setAvatar("new_avatar");
@@ -130,20 +131,22 @@ public class UserControllerTests {
 		this.restTemplet.put
 		(this.url+"/{userspace}/{useremail}",
 				update,response.getUserId().getSpace(),response.getUserId().getEmail());
+	
 		
 		assertThat(this.restTemplet.getForObject
-				(this.url+"/{userspace}"+"/{useremail}",
+				(this.url+"/login"+"/{userspace}"+"/{useremail}",
 						UserBoundary.class, response.getUserId().getSpace(),response.getUserId().getEmail()).getAvatar()).isNotEqualTo(response.getAvatar());
 
-		assertThat(this.restTemplet.getForObject
-				(this.url+"/{userspace}/{useremail}",
+		
+		assertThat(this.restTemplet.getForObject(this.url+"/login"+"/{userspace}/{useremail}",
 						UserBoundary.class, response.getUserId().getSpace(),response.getUserId().getEmail()).getUserName())
 		.isNotEqualTo(response.getUserName());
-
-		assertThat(this.restTemplet.getForObject
-				(this.url+"/{userspace}/{useremail}",
-						UserBoundary.class, response.getUserId().getSpace(),response.getUserId().getEmail()).getRole())
-		.isNotEqualTo(response.getRole());
+		
+		
+		
+		assertThat(this.restTemplet.getForObject(this.url+"/login"+"/{userspace}/{useremail}",
+				UserBoundary.class, response.getUserId().getSpace(),response.getUserId().getEmail()).getRole())
+.isNotEqualTo(response.getRole());
 
 	}
 }
