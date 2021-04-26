@@ -51,6 +51,10 @@ public  class OperationsServiceImplementation implements OperationsService {
 		if(!this.checker.checkOperationId(operation.getOperationId())) {
 			throw new RuntimeException("id can not be null");
 		}
+		
+		if(!this.checker.checkOperationType(operation.getType())) {
+			throw new RuntimeException("type can not be null");
+		}
 		//create new entity ,fill server's fields and save
 		OperationEntity entity = this.convertToEntity(operation);
 

@@ -14,4 +14,10 @@ public class CheckerHelper {
 		return false;
 	}
 
+	public boolean checkOperationType(String type) {
+		if(type != null)
+			return true;
+		return false;
+	}
+
 }

@@ -1,5 +1,6 @@
 package twins.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,13 @@ import twins.logic.OperationsService;
 public class OperationController {
 	private OperationsService operationService;
 	
+	
+	@Autowired
+	public OperationController(OperationsService operationService) {
+		super();
+		this.operationService = operationService;
+	}
+
 	@RequestMapping(
 			path="/twins/operations", 
 			method = RequestMethod.POST,
