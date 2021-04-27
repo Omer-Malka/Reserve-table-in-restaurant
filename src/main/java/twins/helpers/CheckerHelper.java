@@ -1,5 +1,8 @@
 package twins.helpers;
 
+import twins.boundaries.InvokedByBoundary;
+import twins.boundaries.Item;
+import twins.boundaries.ItemIdBoundary;
 import twins.boundaries.OperationIdBoundary;
 
 public class CheckerHelper {
@@ -19,5 +22,16 @@ public class CheckerHelper {
 			return true;
 		return false;
 	}
-
+	
+	public boolean checkOperationItem(Item item) {
+		if(item.getItemId().getId()!=null && item.getItemId().getSpace()!=null)
+			return true;
+		return false;
+	}
+		
+	public boolean checkOperationInvokeBy(InvokedByBoundary invokeBy) {
+		if(invokeBy.getUserId().getEmail()!=null && invokeBy.getUserId().getSpace()!=null)
+			return true;
+		return false;
+	}
 }
