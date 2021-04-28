@@ -261,7 +261,7 @@ public class OperationControllerTests {
 
 
 	@Test
-	public void testPostOperationAndReturnsStatus2xxStatus() throws Exception {
+	public void testPostOperationAndReturnsStatus2xx() throws Exception {
 		//GIVEN the server is up
 		//Do nothing
 
@@ -283,7 +283,7 @@ public class OperationControllerTests {
 		}
 	}
 	@Test
-	public void testPostOperationStoredItemInDB() throws Exception {
+	public void testPostOperationStoredInDB() throws Exception {
 		
 	}
 

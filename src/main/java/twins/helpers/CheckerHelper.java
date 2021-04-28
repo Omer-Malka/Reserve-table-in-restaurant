@@ -8,7 +8,7 @@ import twins.boundaries.OperationIdBoundary;
 public class CheckerHelper {
 	
 	public boolean checkInputString(String name) {
-		return !name.isEmpty();
+		return !name.isEmpty() && name!=null;
 	}
 	
 	public boolean checkOperationId(OperationIdBoundary id) {
