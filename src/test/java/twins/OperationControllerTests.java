@@ -35,49 +35,45 @@ public class OperationControllerTests {
 	private String[] url;
 
 	private RestTemplate restTemplate;
-	
+
 	@LocalServerPort
 	public void setPort(int port) {
 		this.port = port;
 	}
-	
 
-	
+
+
 	@PostConstruct
 	public void init() {
 		this.url = new String[2];
 		this.url[0]=  "http://localhost:" + this.port + PATH_INVOKE;
 		this.url[1]=  "http://localhost:" + this.port + PATH_INVOKE_ASYNC;
 		this.restTemplate = new RestTemplate();
-		
+
 	}
-	
+
 	@AfterEach
 	public void tearDown() {
 		String newUrl =  "http://localhost:" + this.port + "/twins/admin/operations/test/test";
 		this.restTemplate.delete(newUrl);
 	}
-	
-	public void doTestWithPath(String url) {
-		
-	}
-	
+
 	@Test
 	public void testPostEmptyOperationReturnsErrorStatus() throws Exception {
 		Map<String, Object> operation = new HashMap<>();
 		for (i = 0; i <SIZE; i++) {
-		assertThrows(Exception.class, ()->{
-			
-			this.restTemplate
-			.postForObject(this.url[i], operation, OperationBoundary.class);
-			
-			
-		});
+			assertThrows(Exception.class, ()->{
+
+				this.restTemplate
+				.postForObject(this.url[i], operation, OperationBoundary.class);
+
+
+			});
 		}
 	}
-	
+
 	@Test
-	public void testPostOperationWithNullTypeReturns2xxStatus() throws Exception {
+	public void testPostOperationWithNullTypeReturnErrorStatus() throws Exception {
 		//GIVEN the server is up
 		//Do nothing
 		//for (i = 0; i <SIZE; i++) {
@@ -87,204 +83,208 @@ public class OperationControllerTests {
 		operation.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(TEST_VALUE, TEST_VALUE)));
 		operation.setItem(new Item(new ItemIdBoundary(TEST_VALUE, TEST_VALUE)));
 		operation.setOperationAttributes(new HashMap<>());
-		
+
 		for (i = 0; i <SIZE; i++) {
 			assertThrows(Exception.class, ()->{
-				
+
 				this.restTemplate
 				.postForObject(this.url[i], operation, OperationBoundary.class);
-				
-				
+
+
 			});
-			}
+		}
 		//}
-		//THEN the server returns status 2xx
+	//THEN the server returns status 2xx
 		//Do nothing
-	
-}
-	
-	
+
+	}
+
+
 	@Test
-	public void testPostOperationWithNullItemReturns2xxStatus() throws Exception {
+	public void testPostOperationWithNullItemReturnErrorStatus() throws Exception {
 		//GIVEN the server is up
 		//Do nothing
-		
+
 		//WHEN I invoke POST /operation with {Item=null}
-		
+
 		OperationBoundary operation = new OperationBoundary();
 		operation.setType(TEST_VALUE);
 		operation.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(TEST_VALUE, TEST_VALUE)));
 		operation.setItem(null);
 		operation.setOperationAttributes(new HashMap<>());
 		for (i = 0; i <SIZE; i++) {
-		assertThrows(Exception.class, ()->{
-			
+			assertThrows(Exception.class, ()->{
+
 				this.restTemplate
 				.postForObject(this.url[i], operation, OperationBoundary.class);
-				
-		});
+
+			});
 		}
 		//THEN the server returns status 2xx
 		//Do nothing
 	}
-	
+
 	@Test
-	public void testPostOperationWithNullItem_IdReturns2xxStatus() throws Exception {
+	public void testPostOperationWithNullItemIdReturnErrorStatus() throws Exception {
 		//GIVEN the server is up
 		//Do nothing
-		
+
 		//WHEN I invoke POST /operation with {item=null}
-		
+
 		OperationBoundary operation = new OperationBoundary();
 		operation.setType(TEST_VALUE);
 		operation.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(TEST_VALUE, TEST_VALUE)));
 		operation.setItem(new Item(new ItemIdBoundary(null, TEST_VALUE)));
 		operation.setOperationAttributes(new HashMap<>());
-		
+
 		for (i = 0; i <SIZE; i++) {
 			assertThrows(Exception.class, ()->{
-				
+
 				this.restTemplate
 				.postForObject(this.url[i], operation, OperationBoundary.class);
-				
-				
+
+
 			});
-			}
-		
+		}
+
 		//THEN the server returns status 2xx
 		//Do nothing
 	}
-	
+
 	@Test
-	public void testPostOperationWithNullItem_SpaceReturns2xxStatus() throws Exception {
+	public void testPostOperationWithNullItemSpaceReturnErrorStatus() throws Exception {
 		//GIVEN the server is up
 		//Do nothing
-		
+
 		//WHEN I invoke POST /operation with {item=null}
-		
+
 		OperationBoundary operation = new OperationBoundary();
 		operation.setType(TEST_VALUE);
 		operation.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(TEST_VALUE, TEST_VALUE)));
 		operation.setItem(new Item(new ItemIdBoundary(TEST_VALUE, null)));
 		operation.setOperationAttributes(new HashMap<>());
-		
+
 		for (i = 0; i <SIZE; i++) {
 			assertThrows(Exception.class, ()->{
-				
+
 				this.restTemplate
 				.postForObject(this.url[i], operation, OperationBoundary.class);
-				
-				
+
+
 			});
-			}
-		
+		}
+
 		//THEN the server returns status 2xx
 		//Do nothing
 	}
-	
+
 	@Test
-	public void testPostOperationWithNullInvokeByReturns2xxStatus() throws Exception {
+	public void testPostOperationWithNullInvokeByReturnErrorStatus() throws Exception {
 		//GIVEN the server is up
 		//Do nothing
-		
+
 		//WHEN I invoke POST /operation with {item=null}
-		
+
 		OperationBoundary operation = new OperationBoundary();
 		operation.setType(TEST_VALUE);
 		operation.setInvokedBy(null);
 		operation.setItem(new Item(new ItemIdBoundary(TEST_VALUE, TEST_VALUE)));
 		operation.setOperationAttributes(new HashMap<>());
-		
+
 		for (i = 0; i <SIZE; i++) {
 			assertThrows(Exception.class, ()->{
-				
+
 				this.restTemplate
 				.postForObject(this.url[i], operation, OperationBoundary.class);
-				
-				
+
+
 			});
-			}
-		
+		}
+
 		//THEN the server returns status 2xx
 		//Do nothing
 	}
-	
+
 	@Test
-	public void testPostOperationWithNullUserIdSpaceReturns2xxStatus() throws Exception {
+	public void testPostOperationWithNullUserIdSpaceReturnErrorStatus() throws Exception {
 		//GIVEN the server is up
 		//Do nothing
-		
+
 		//WHEN I invoke POST /operation with {item=null}
-		
+
 		OperationBoundary operation = new OperationBoundary();
 		operation.setType(TEST_VALUE);
 		operation.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(null, TEST_VALUE)));
 		operation.setItem(new Item(new ItemIdBoundary(TEST_VALUE, TEST_VALUE)));
 		operation.setOperationAttributes(new HashMap<>());
-		
+
 		for (i = 0; i <SIZE; i++) {
 			assertThrows(Exception.class, ()->{
-				
+
 				this.restTemplate
 				.postForObject(this.url[i], operation, OperationBoundary.class);
-				
-				
+
+
 			});
-			}
-		
+		}
+
 		//THEN the server returns status 2xx
 		//Do nothing
 	}
-	
+
 	@Test
-	public void testPostOperationWithNullUserIdEmailReturns2xxStatus() throws Exception {
+	public void testPostOperationWithNullUserIdEmailReturnErrorStatus() throws Exception {
 		//GIVEN the server is up
 		//Do nothing
-		
+
 		//WHEN I invoke POST /operation with {item=null}
-		
+
 		OperationBoundary operation = new OperationBoundary();
 		operation.setType(TEST_VALUE);
 		operation.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(TEST_VALUE, null)));
 		operation.setItem(new Item(new ItemIdBoundary(TEST_VALUE, TEST_VALUE)));
 		operation.setOperationAttributes(new HashMap<>());
-		
+
 		for (i = 0; i <SIZE; i++) {
 			assertThrows(Exception.class, ()->{
-				
+
 				this.restTemplate
 				.postForObject(this.url[i], operation, OperationBoundary.class);
-				
-				
+
+
 			});
-			}
-		
+		}
+
 		//THEN the server returns status 2xx
 		//Do nothing
 	}
 
-	
+
 	@Test
 	public void testPostOperationAndReturnsStatus2xxStatus() throws Exception {
 		//GIVEN the server is up
 		//Do nothing
-		
+
 		//WHEN I invoke POST /operation with {item=null}
 		for (int i = 0; i < SIZE; i++) {
-		OperationBoundary operation = new OperationBoundary();
-		operation.setType(TEST_VALUE);
-		operation.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(TEST_VALUE, TEST_VALUE)));
-		operation.setItem(new Item(new ItemIdBoundary(TEST_VALUE, TEST_VALUE)));
-		operation.setOperationAttributes(new HashMap<>());
-		
-//		assertThrows(Exception.class, ()->{
-//			this.restTemplate
-//			.postForObject(this.url, operation, ItemBoundary.class);
-//		});
-		
-		//THEN the server returns status 2xx
-		//Do nothing
+			OperationBoundary operation = new OperationBoundary();
+			operation.setType(TEST_VALUE);
+			operation.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(TEST_VALUE, TEST_VALUE)));
+			operation.setItem(new Item(new ItemIdBoundary(TEST_VALUE, TEST_VALUE)));
+			operation.setOperationAttributes(new HashMap<>());
+
+			//		assertThrows(Exception.class, ()->{
+			//			this.restTemplate
+			//		17	.postForObject(this.url, operation, ItemBoundary.class);
+			//		});
+
+			//THEN the server returns status 2xx
+			//Do nothing
+		}
 	}
+	@Test
+	public void testPostOperationStoredItemInDB() throws Exception {
+		
 	}
-	
+
 }
