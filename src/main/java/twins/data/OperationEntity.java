@@ -2,9 +2,10 @@ package twins.data;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 
 
@@ -12,9 +13,10 @@ import javax.persistence.Table;
  * OPERATIONS
  * ID|TYPE
  */
-@Entity
-@Table(name="OPERATIONS")
+
+@Document(collection="OPERATIONS")
 public class OperationEntity {
+	@Id
 	private String operationId;
 	private String type;
 	private String itemId;
@@ -27,7 +29,7 @@ public class OperationEntity {
 	public OperationEntity() {
 	}
 
-	@Id
+
 	public String getOperationId() {
 		return this.operationId;
 	}

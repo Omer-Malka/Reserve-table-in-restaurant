@@ -1,6 +1,6 @@
 package twins.logic;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
-import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.RuntimeCryptoException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -64,7 +64,7 @@ public class UserServiceImplementation implements UsersService{
 		if (entity.isPresent()) {
 		return this.convertToBoundary(entity.get());
 		}else {
-			throw new RuntimeCryptoException("id could not be found");
+			throw new RuntimeException("id could not be found");
 		}
 		
 	}
@@ -80,7 +80,7 @@ public class UserServiceImplementation implements UsersService{
 			this.userHandler.save(updatedEntity);
 			
 		}else {
-			throw new RuntimeCryptoException("id could not be found");
+			throw new RuntimeException("id could not be found");
 			
 		}
 		
@@ -115,7 +115,6 @@ public class UserServiceImplementation implements UsersService{
 		entity.setRole(user.getRole());
 		entity.setUserName(user.getUserName());
 		entity.setUserid(user.getUserId().getSpace()+"%"+user.getUserId().getEmail());
-		
 		return entity;
 	}
 	

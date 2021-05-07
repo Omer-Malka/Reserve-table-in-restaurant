@@ -1,17 +1,19 @@
 package twins.data;
 
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-@Entity
-@Table(name="ITEMS")
+
+
+
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+
+@Document(collection="ITEMS")
 public class ItemEntity {
+	@Id
 	private String itemId;
 	private String type;
 	private String name;
@@ -27,7 +29,7 @@ public class ItemEntity {
 		
 	}
 
-	@Id
+
 	public String getItemId() {
 		return this.itemId;
 	}
@@ -52,8 +54,8 @@ public class ItemEntity {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="CREATED_DATE")
+
+	@Field("CREATED_DATE")
 	public Date getCreatedTimestamp() {
 		return createdTimestamp;
 	}
@@ -84,7 +86,7 @@ public class ItemEntity {
 	public void setLocationLng(Double locationLng) {
 		this.locationLng = locationLng;
 	}
-	@Lob
+
 	public String getItemAttributes() {
 		return itemAttributes;
 	}

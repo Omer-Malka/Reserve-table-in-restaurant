@@ -1,14 +1,15 @@
 package twins.data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-import twins.boundaries.UserIdBoundary;
 
-@Entity
-@Table(name="USERS")
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+
+
+@Document(collection="USERS")
 public class UserEntity {
+	@Id
 	private String userid;
 	private String role;
 	private String userName;
@@ -18,7 +19,7 @@ public class UserEntity {
 		
 	}
 
-	@Id
+	
 	public String getUserid() {
 		return userid;
 	}

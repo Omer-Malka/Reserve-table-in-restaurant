@@ -161,7 +161,8 @@ public class AdminControllerTests {
 
 		//THEN DB contains the user 
 		ResponseEntity<ItemBoundary[]> actual = this.restTemplate.
-				getForEntity(this.url[0]+ "/items" + "/{userSpace}/{userEmail}", ItemBoundary[].class, response.getItemId().getSpace(), response.getItemId().getId());
+				getForEntity(this.url[0]+ "/items" + "/{userSpace}/{userEmail}", ItemBoundary[].class, response.getItemId().getSpace(),
+						response.getCreatedBy().getUserId().getEmail());
 		assertThat(actual.getBody().length).isEqualTo(0);	
 
 	}

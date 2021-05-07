@@ -1,10 +1,11 @@
 package twins.data;
 
-import org.springframework.data.repository.CrudRepository;
 
-import twins.boundaries.OperationIdBoundary;
 
-public interface OperationHandler extends CrudRepository <OperationEntity, String>{
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+
+public interface OperationHandler extends MongoRepository <OperationEntity, String>{
 	// C - Create
 	
 	// R - Read
