@@ -62,7 +62,7 @@ public class ItemsServiceImplementation implements ItemsService{
 		}
 		//create new entity ,fill server's fields and save
 		ItemEntity entity = this.convertToEntity(item);
-		entity.setUserSpace(this.name);
+		entity.setUserSpace(userSpace);
 		entity.setUserEmail(userEmail);
 		//generate id + timestamp
 		entity.setCreatedTimestamp(new Date());

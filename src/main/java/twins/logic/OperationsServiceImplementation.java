@@ -23,6 +23,12 @@ import twins.boundaries.UserIdBoundary;
 import twins.data.OperationEntity;
 import twins.data.OperationHandler;
 import twins.helpers.CheckerHelper;
+import twins.logic.operations.CancelReservation;
+import twins.logic.operations.ChangeReservationDetails;
+import twins.logic.operations.Clasp;
+import twins.logic.operations.ReserveTable;
+import twins.logic.operations.UpdateRestaurantDetails;
+import twins.logic.operations.ViewTableMap;
 
 @Service
 public  class OperationsServiceImplementation implements OperationsService {
@@ -30,6 +36,12 @@ public  class OperationsServiceImplementation implements OperationsService {
 	private OperationHandler operationHandler;
 	private ObjectMapper jackson;
 	private CheckerHelper checker;
+	private ReserveTable reserveTable;
+	private CancelReservation cancelReservation;
+	private ChangeReservationDetails changeReservationDetails;
+	private Clasp clasp;
+	private UpdateRestaurantDetails updateRestaurantDetails;
+	private ViewTableMap viewTableMap;
 
 	@Autowired	
 	public OperationsServiceImplementation(OperationHandler operationHandler) {
@@ -37,6 +49,12 @@ public  class OperationsServiceImplementation implements OperationsService {
 		this.operationHandler = operationHandler;
 		this.checker = new CheckerHelper();
 		this.jackson = new ObjectMapper();
+		this.cancelReservation = new CancelReservation();
+		this.changeReservationDetails = new ChangeReservationDetails();
+		this.reserveTable = new ReserveTable();
+		this.clasp = new Clasp();
+		this.updateRestaurantDetails = new UpdateRestaurantDetails();
+		this.viewTableMap = new ViewTableMap();
 	}
 
 	@Value("${spring.application.name: 2021b.lidar.ben.david}")
@@ -51,19 +69,19 @@ public  class OperationsServiceImplementation implements OperationsService {
 		if(!this.checker.checkOperationId(operation.getOperationId())) {
 			throw new RuntimeException("Id can not be null");
 		}
-		
+
 		if(!this.checker.checkOperationType(operation.getType())) {
 			throw new RuntimeException("Type can not be null");
 		}
-		
+
 		if(!this.checker.checkOperationItem(operation.getItem())) {
 			throw new RuntimeException("Item can not be null");
 		}
-		
+
 		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
 			throw new RuntimeException("User Id can not be null");
 		}
-		
+
 		//create new entity ,fill server's fields and save
 		OperationEntity entity = this.convertToEntity(operation);
 
@@ -71,6 +89,34 @@ public  class OperationsServiceImplementation implements OperationsService {
 		entity.setCreatedTimestamp(new Date());
 		entity.setOperationId(this.name.concat("@").concat(UUID.randomUUID().toString()));
 		//insert to db
+		switch (operation.getType()) {
+		case "cancelReservation":
+			
+			break;
+
+		case "reserveTable":
+			this.reserveTable.reserve(entity);
+			break;
+
+		case "changeReservationDetails":
+
+			break;
+
+		case "clasp":
+
+			break;
+
+		case "updateRestaurantDetails":
+
+			break;
+
+		case "viewTableMap":
+
+			break;
+
+		default:
+			break;
+		}
 		return this.convertToBoundary(this.operationHandler.save(entity));
 	}
 
@@ -79,19 +125,19 @@ public  class OperationsServiceImplementation implements OperationsService {
 		if(!this.checker.checkOperationId(operation.getOperationId())) {
 			throw new RuntimeException("id can not be null");
 		}
-		
+
 		if(!this.checker.checkOperationType(operation.getType())) {
 			throw new RuntimeException("Type can not be null");
 		}
-		
+
 		if(!this.checker.checkOperationItem(operation.getItem())) {
 			throw new RuntimeException("Item can not be null");
 		}
-		
+
 		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
 			throw new RuntimeException("User Id can not be null");
 		}
-		
+
 		//create new entity ,fill server's fields and save
 		OperationEntity entity = this.convertToEntity(operation);
 

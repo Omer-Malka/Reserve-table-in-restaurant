@@ -144,26 +144,26 @@ public class AdminControllerTests {
 
 	}
 	
-//	@Test
-//	public void testDeleteItemsStoredInDB() throws Exception{
-//		//GIVEN the server is run and DB is empty 
-//
-//
-//		//WHEN POST 
-//		ItemBoundary item = new ItemBoundary();
-//		item.setName(TEST_VALUE);
-//		item.setType(TEST_VALUE);
-//		ItemBoundary response = this.restTemplate
-//				.postForObject(this.url[2], item, ItemBoundary.class);
-//		
-//		String newUrl = this.url[6];
-//		this.restTemplate.delete(newUrl);
-//
-//		//THEN DB contains the user 
-//		ResponseEntity<ItemBoundary[]> actual = this.restTemplate.
-//				getForEntity(this.url[0]+ "/items" + "/{userSpace}/{userEmail}", ItemBoundary[].class, response.getItemId().getSpace(), response.getItemId().getId());
-//		assertThat(actual.getBody().length).isEqualTo(0);	
-//
-//	}
+	@Test
+	public void testDeleteItemsStoredInDB() throws Exception{
+		//GIVEN the server is run and DB is empty 
+
+
+		//WHEN POST 
+		ItemBoundary item = new ItemBoundary();
+		item.setName(TEST_VALUE);
+		item.setType(TEST_VALUE);
+		ItemBoundary response = this.restTemplate
+				.postForObject(this.url[2], item, ItemBoundary.class);
+		
+		String newUrl = this.url[6];
+		this.restTemplate.delete(newUrl);
+
+		//THEN DB contains the user 
+		ResponseEntity<ItemBoundary[]> actual = this.restTemplate.
+				getForEntity(this.url[0]+ "/items" + "/{userSpace}/{userEmail}", ItemBoundary[].class, response.getItemId().getSpace(), response.getItemId().getId());
+		assertThat(actual.getBody().length).isEqualTo(0);	
+
+	}
 
 }
