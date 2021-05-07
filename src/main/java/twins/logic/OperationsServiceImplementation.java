@@ -26,8 +26,9 @@ import twins.helpers.CheckerHelper;
 import twins.logic.operations.CancelReservation;
 import twins.logic.operations.ChangeReservationDetails;
 import twins.logic.operations.Clasp;
+import twins.logic.operations.InitialTablesMap;
 import twins.logic.operations.ReserveTable;
-import twins.logic.operations.UpdateRestaurantDetails;
+import twins.logic.operations.UpdateTablesMap;
 import twins.logic.operations.ViewTableMap;
 
 @Service
@@ -40,8 +41,9 @@ public  class OperationsServiceImplementation implements OperationsService {
 	private CancelReservation cancelReservation;
 	private ChangeReservationDetails changeReservationDetails;
 	private Clasp clasp;
-	private UpdateRestaurantDetails updateRestaurantDetails;
+	private UpdateTablesMap updateTablesMap;
 	private ViewTableMap viewTableMap;
+	private InitialTablesMap initialTablesMap;
 
 	@Autowired	
 	public OperationsServiceImplementation(OperationHandler operationHandler) {
@@ -53,8 +55,9 @@ public  class OperationsServiceImplementation implements OperationsService {
 		this.changeReservationDetails = new ChangeReservationDetails();
 		this.reserveTable = new ReserveTable();
 		this.clasp = new Clasp();
-		this.updateRestaurantDetails = new UpdateRestaurantDetails();
+		this.updateTablesMap = new UpdateTablesMap();
 		this.viewTableMap = new ViewTableMap();
+		this.initialTablesMap = new InitialTablesMap();
 	}
 
 	@Value("${spring.application.name: 2021b.lidar.ben.david}")
@@ -112,6 +115,10 @@ public  class OperationsServiceImplementation implements OperationsService {
 
 		case "viewTableMap":
 
+			break;
+		
+		case "initialTablesMap":
+			
 			break;
 
 		default:
