@@ -99,6 +99,7 @@ public  class OperationsServiceImplementation implements OperationsService {
 
 		case "reserveTable":
 //			this.reserveTable.reserve(entity);
+			
 			break;
 
 		case "changeReservationDetails":
