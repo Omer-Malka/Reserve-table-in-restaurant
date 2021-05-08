@@ -1,26 +1,31 @@
 package twins.logic.operations;
 
-import java.util.Map;
+import twins.boundaries.ItemBoundary;
 
 
 public class ReserveTable {
 
-	public void reserve(Map<String,Object> reservationDetails) {
+	public void reserve(String itemId, String time, String name) {
 		// TODO Auto-generated method stub
+		//get the item entity by itemid and update it
 		
 	}
 	
-	public boolean checkReservationTime(int numOfPeople, String time) {
+	public ItemBoundary checkReservationTime(int numOfPeople, String time) {
 		//get all tables with same capacity(capacity==numOfPeople)
-		return false;
+		//check which table empty
+		//return it if exists
+		return null;
 		
 	}
 	
 	public String getBetterOption(int numOfPeople, String time) {
+		//suggest a better option of time and return this time
 		return time;	
 	}
 	/*
 	 * operationAttributes:
+	 * name: String
 	 * capacity: int
 	 * time: String
 	 */
