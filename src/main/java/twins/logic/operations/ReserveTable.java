@@ -8,5 +8,16 @@ public class ReserveTable {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public boolean checkReservationTime(int numOfPeople, String time) {
+		return false;
+		
+	}
+	
+	public String getBetterOption(int numOfPeople, String time) {
+		return time;
+		
+		
+	}
 
 }

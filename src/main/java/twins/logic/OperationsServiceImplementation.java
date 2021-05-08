@@ -94,11 +94,11 @@ public  class OperationsServiceImplementation implements OperationsService {
 		//insert to db
 		switch (operation.getType()) {
 		case "cancelReservation":
-			
+
 			break;
 
 		case "reserveTable":
-			this.reserveTable.reserve(entity);
+//			this.reserveTable.reserve(entity);
 			break;
 
 		case "changeReservationDetails":
@@ -116,9 +116,12 @@ public  class OperationsServiceImplementation implements OperationsService {
 		case "viewTableMap":
 
 			break;
-		
+
 		case "initialTablesMap":
-			
+			if(!InitialTablesMap.isInitialized()) {
+				this.initialTablesMap.initial(this.unmarshall(entity.getOperationAttributes(), Map.class), 
+						entity.getUserSpace(), entity.getUserEmail());
+			}
 			break;
 
 		default:
