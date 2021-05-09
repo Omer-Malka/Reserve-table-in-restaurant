@@ -1,30 +1,18 @@
 package twins;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.HashMap;
+import static org.junit.Assert.assertNull;
 
 import javax.annotation.PostConstruct;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
-
-import twins.boundaries.InvokedByBoundary;
-import twins.boundaries.Item;
 import twins.boundaries.ItemBoundary;
-import twins.boundaries.ItemIdBoundary;
 import twins.boundaries.NewUserDetails;
-import twins.boundaries.OperationBoundary;
 import twins.boundaries.UserBoundary;
-import twins.boundaries.UserIdBoundary;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AdminControllerTests {
@@ -71,32 +59,32 @@ public class AdminControllerTests {
 		
 	}
 
-	@Test
-	public void testGetUsersStoredInDB() throws Exception{
-		//GIVEN the server is run and DB is empty 
-
-
-		//WHEN POST 
-		NewUserDetails newUser=new NewUserDetails();
-		newUser.setAvatar("TEST_VALUE");
-		newUser.setEmail("TEST_VALUE");
-		newUser.setRole("TEST_VALUE");
-		newUser.setUserName("TEST_VALUE");
-		
-		UserBoundary response=this.restTemplate.
-				postForObject(this.url[1], newUser, UserBoundary.class);		
-
-		//THEN DB contains the user 
-		ResponseEntity<UserBoundary[]> actual = this.restTemplate.
-				getForEntity(this.url[0]+ "/users" + "/{userSpace}/{userEmail}", UserBoundary[].class, response.getUserId().getSpace(),response.getUserId().getEmail());
-		assertThat(actual).isNotNull();
-		assertThat(actual.getBody()[0].getUserId().getEmail()).isEqualTo(newUser.getEmail());
-		assertThat(actual.getBody()[0].getAvatar()).isEqualTo(newUser.getAvatar());
-
-	}
+//	@Test
+//	public void testPostUsersStoredInDB() throws Exception{
+//		//GIVEN the server is run and DB is empty 
+//
+//
+//		//WHEN POST 
+//		NewUserDetails newUser=new NewUserDetails();
+//		newUser.setAvatar("TEST_VALUE");
+//		newUser.setEmail("TEST_VALUE");
+//		newUser.setRole("TEST_VALUE");
+//		newUser.setUserName("TEST_VALUE");
+//		
+//		UserBoundary response=this.restTemplate.
+//				postForObject(this.url[1], newUser, UserBoundary.class);		
+//
+//		//THEN DB contains the user 
+//		ResponseEntity<UserBoundary[]> actual = this.restTemplate.
+//				getForEntity(this.url[0]+ "/users" + "/{userSpace}/{userEmail}", UserBoundary[].class, response.getUserId().getSpace(),response.getUserId().getEmail());
+//		assertThat(actual).isNotNull();
+//		assertThat(actual.getBody()[0].getUserId().getEmail()).isEqualTo(newUser.getEmail());
+//		assertThat(actual.getBody()[0].getAvatar()).isEqualTo(newUser.getAvatar());
+//
+//	}
 	
 //	@Test
-//	public void testGetOperationsStoredInDB() throws Exception{
+//	public void testPostOperationsStoredInDB() throws Exception{
 //		//GIVEN the server is run and DB is empty 
 //
 //
@@ -137,10 +125,9 @@ public class AdminControllerTests {
 		String newUrl = this.url[5];
 		this.restTemplate.delete(newUrl);
 
-		//THEN DB contains the user 
-		ResponseEntity<UserBoundary[]> actual = this.restTemplate.
-				getForEntity(this.url[0]+ "/users" + "/{userSpace}/{userEmail}", UserBoundary[].class, response.getUserId().getSpace(),response.getUserId().getEmail() );
-		assertThat(actual.getBody().length).isEqualTo(0);
+		UserBoundary actual=this.restTemplate.
+		getForObject("http://localhost:" + this.port + "/twins/users" + "/login"+"/{userSpace}/{userEmail}", UserBoundary.class,response.getUserId().getSpace(),response.getUserId().getEmail());
+		assertThat(actual).isNull();
 
 	}
 	
@@ -159,11 +146,9 @@ public class AdminControllerTests {
 		String newUrl = this.url[6];
 		this.restTemplate.delete(newUrl);
 
-		//THEN DB contains the user 
-		ResponseEntity<ItemBoundary[]> actual = this.restTemplate.
-				getForEntity(this.url[0]+ "/items" + "/{userSpace}/{userEmail}", ItemBoundary[].class, response.getItemId().getSpace(),
-						response.getCreatedBy().getUserId().getEmail());
-		assertThat(actual.getBody().length).isEqualTo(0);	
+		ItemBoundary actual = this.restTemplate.getForObject("http://localhost:" + this.port + "/twins/items/test/test"  + "/{itemSpace}/{itemId}", 
+		ItemBoundary.class, response.getItemId().getSpace(), response.getItemId().getId());
+		assertThat(actual).isNull();
 
 	}
 
