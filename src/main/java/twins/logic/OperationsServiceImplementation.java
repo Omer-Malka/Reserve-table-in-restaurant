@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +35,7 @@ import twins.logic.operations.UpdateTablesMap;
 import twins.logic.operations.ViewTableMap;
 
 @Service
-public  class OperationsServiceImplementation implements OperationsService {
+public  class OperationsServiceImplementation implements OperationsServiceExtended {
 	private String name;
 	private OperationHandler operationHandler;
 	private ObjectMapper jackson;
@@ -172,9 +174,9 @@ public  class OperationsServiceImplementation implements OperationsService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
+	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail,int size,int page) {
 		List<OperationBoundary> rv = new ArrayList<>(); 
-		Iterable<OperationEntity> allEntities = this.operationHandler.findAll();
+		Iterable<OperationEntity> allEntities = this.operationHandler.findAll(PageRequest.of(page, size,Direction.ASC,"id"));
 		if(allEntities == null) {
 			throw new RuntimeException("No operation to return");
 		}
@@ -228,6 +230,12 @@ public  class OperationsServiceImplementation implements OperationsService {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

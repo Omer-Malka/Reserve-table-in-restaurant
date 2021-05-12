@@ -6,22 +6,23 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import twins.boundaries.OperationBoundary;
 import twins.boundaries.UserBoundary;
 import twins.logic.ItemsService;
-import twins.logic.OperationsService;
-import twins.logic.UsersService;
+import twins.logic.OperationsServiceExtended;
+import twins.logic.UserServiceExtended;
 
 @RestController
 public class AdminController {
 
-	public UsersService usersService;
-	public OperationsService operationsService;
+	private UserServiceExtended usersService;
+	public OperationsServiceExtended operationsService;
 	public ItemsService itemsService;
 
 	@Autowired
-	public  AdminController(UsersService usersService, OperationsService operationsService, ItemsService itemsService) {
+	public  AdminController(UserServiceExtended usersService, OperationsServiceExtended operationsService, ItemsService itemsService) {
 		this.usersService=usersService;
 		this.operationsService=operationsService;
 		this.itemsService=itemsService;
@@ -33,8 +34,10 @@ public class AdminController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public UserBoundary[] getAllUsers(
 			@PathVariable("userSpace") String userSpace,
-			@PathVariable("userEmail") String userEmail){
-		List<UserBoundary> allUsers= this.usersService.getAllUsers(userSpace, userEmail);
+			@PathVariable("userEmail") String userEmail,
+			@RequestParam(name="size",required=false,defaultValue="20")int size,
+			@RequestParam(name="page",required=false,defaultValue="0")int page){
+		List<UserBoundary> allUsers= this.usersService.getAllUsers(userSpace, userEmail,size,page);
 		return allUsers.toArray(new UserBoundary[0]);	
 	}
 
@@ -45,8 +48,10 @@ public class AdminController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public OperationBoundary[] getAllOperations(
 			@PathVariable("userSpace") String userSpace,
-			@PathVariable("userEmail") String userEmail){
-		List<OperationBoundary> allOperations = this.operationsService.getAllOperations(userSpace, userEmail);
+			@PathVariable("userEmail") String userEmail,
+			@RequestParam(name="size",required=false,defaultValue="20")int size,
+			@RequestParam(name="page",required=false,defaultValue="0")int page){
+		List<OperationBoundary> allOperations = this.operationsService.getAllOperations(userSpace, userEmail,size,page);
 
 		return allOperations.toArray(new OperationBoundary[0]);	
 	}

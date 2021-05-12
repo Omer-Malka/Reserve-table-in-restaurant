@@ -11,6 +11,8 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,7 @@ import twins.data.UserEntity;
 import twins.data.UserHandler;
 
 @Service
-public class UserServiceImplementation implements UsersService{
+public class UserServiceImplementation implements UserServiceExtended{
 	private UserHandler userHandler;
 	private String name;
 	
@@ -89,8 +91,8 @@ public class UserServiceImplementation implements UsersService{
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<UserBoundary> getAllUsers(String adminSpace, String adminMail) {
-		Iterable<UserEntity> allUsers = this.userHandler.findAll();
+	public List<UserBoundary> getAllUsers(String adminSpace, String adminMail, int size,int page) {
+		Iterable<UserEntity> allUsers = this.userHandler.findAll(PageRequest.of(page, size, Direction.ASC, "id"));
 		List<UserBoundary> rv=new ArrayList<>();
 		if (allUsers!=null) {
 		for(UserEntity entity: allUsers)		
@@ -127,6 +129,12 @@ public class UserServiceImplementation implements UsersService{
 		String [] arrOfStr=entity.getUserid().split("%");//separate to two strings
 		boundary.setUserId(new UserIdBoundary(arrOfStr[0],arrOfStr[1]));
 		return boundary;
+	}
+
+	@Override
+	public List<UserBoundary> getAllUsers(String adminSpace, String adminMail) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	
