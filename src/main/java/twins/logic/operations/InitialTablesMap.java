@@ -27,14 +27,11 @@ public class InitialTablesMap {
 		return isInitialized;
 	}
 
-	public void storeTable(Map<String,Object> tablesDetails, String userSpace, String userEmail) {
+	public void storeTable(Map<String,String> tablesDetails, String userSpace, String userEmail) {
 		ItemBoundary item = new ItemBoundary();
-		for(Map.Entry<String,Object> entry : tablesDetails.entrySet()) {
-
-			
-		}
-		Map<String,String> hoursMap = this.initialHoursMap();
-		item.getItemAttributes().put("OccupancyTime", hoursMap);
+		item.getItemAttributes().put("tableNumber", tablesDetails.get("tableNumber"));
+		item.getItemAttributes().put("capacity", new Integer(tablesDetails.get("capacity")));
+		item.getItemAttributes().put("occupancyTime", this.initialHoursMap());
 		itemService.createItem(userSpace, userEmail, item);
 		isInitialized = true;
 	}
@@ -47,9 +44,14 @@ public class InitialTablesMap {
 		return rv;
 	}
 	 
-	/* item attributes:
+	/* operation attributes:
+	 * tableNumber: String 
+	 * capacity: String
+	 */
+	
+	/* item attributes(Map<String,Object>) :
 	 * tableNumber: String 
 	 * capacity: Integer
-	 * OccupancyTime: map of hours and who is reserved it for example : ("10-12": "lidar", "12-14": "")
+	 * OccupancyTime: Map<String,String> of hours and who is reserved it for example : ("10-12": "lidar", "12-14": "")
 	 */
 }

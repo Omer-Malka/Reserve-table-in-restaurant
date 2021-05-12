@@ -114,7 +114,7 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 	@Override
 	@Transactional(readOnly = true)
 	public List<ItemBoundary> getAllItems(String userSpace, String userEmail, int size, int page) {
-		Page<ItemEntity> entitiesPage = this.itemHandler.findAll(PageRequest.of(page, size, Direction.ASC, "type", "createdTimestamp", "userEmail"));
+		Page<ItemEntity> entitiesPage = this.itemHandler.findAllByUserSpaceAndUserEmail(userSpace, userEmail, PageRequest.of(page, size, Direction.ASC, "type", "createdTimestamp", "itemId"));
 		List<ItemBoundary> rv = new ArrayList<>();
 		Iterable<ItemEntity> allEntities = entitiesPage.getContent();
 		for (ItemEntity item : allEntities) {				
