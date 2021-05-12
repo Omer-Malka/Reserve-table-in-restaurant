@@ -1,8 +1,8 @@
 package twins.data;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 
-public interface ItemHandler extends MongoRepository <ItemEntity, String> {
+public interface ItemHandler extends PagingAndSortingRepository<ItemEntity, String> {
 
 }

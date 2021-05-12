@@ -120,7 +120,7 @@ public  class OperationsServiceImplementation implements OperationsService {
 
 		case "initialTablesMap":
 			if(!InitialTablesMap.isInitialized()) {
-				this.initialTablesMap.initial(this.unmarshall(entity.getOperationAttributes(), Map.class), 
+				this.initialTablesMap.storeTable(this.unmarshall(entity.getOperationAttributes(), Map.class), 
 						entity.getUserSpace(), entity.getUserEmail());
 			}
 			break;

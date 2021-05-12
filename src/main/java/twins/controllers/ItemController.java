@@ -8,17 +8,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import twins.boundaries.ItemBoundary;
+import twins.logic.ItemServiceExtended;
 import twins.logic.ItemsService;
 
 @RestController
 public class ItemController {
-	private ItemsService itemService;
+	private ItemServiceExtended itemService;
 	
 	
 	@Autowired
-	public ItemController(ItemsService itemService) {
+	public ItemController(ItemServiceExtended itemService) {
 		this.itemService = itemService;
 	}
 
@@ -28,8 +30,10 @@ public class ItemController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ItemBoundary[] getItemsOfSpecificUser(
 			@PathVariable("userSpace") String userSpace,
-			@PathVariable("userEmail") String userEmail){
-		List<ItemBoundary> allItems=itemService.getAllItems(userSpace, userEmail);
+			@PathVariable("userEmail") String userEmail,
+			@RequestParam(name="size", required = false, defaultValue = "20") int size,
+			@RequestParam(name="page", required = false, defaultValue = "0") int page){
+		List<ItemBoundary> allItems=itemService.getAllItems(userSpace, userEmail, size, page);
 		return allItems.toArray(new ItemBoundary[0]);
 	}
 

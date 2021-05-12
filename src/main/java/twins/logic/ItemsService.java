@@ -6,7 +6,7 @@ import twins.boundaries.ItemBoundary;
 
 public interface ItemsService {
 
-	public List<ItemBoundary> getAllItems(String userSpace, String userEmail);
+	@Deprecated List<ItemBoundary> getAllItems(String userSpace, String userEmail);
 
 	public ItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId);
 

@@ -13,16 +13,12 @@ public class OperationBoundary {
 	private InvokedByBoundary invokedBy;
 	private Map<String,Object> operationAttributes;
 	
-	
-	
 	public OperationBoundary() {
 		operationAttributes = new HashMap<>();
 		invokedBy = new InvokedByBoundary();
 		operationId = new OperationIdBoundary();
 		item = new Item();
 	}
-
-
 
 	public OperationBoundary(OperationIdBoundary operationId, String type, Item item, Date createdTimestamp,
 			InvokedByBoundary invokedBy,Map<String, Object> operationAttributes) {

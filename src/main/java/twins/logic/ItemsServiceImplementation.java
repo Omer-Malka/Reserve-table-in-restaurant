@@ -9,6 +9,9 @@ import java.util.UUID;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +25,7 @@ import twins.data.ItemHandler;
 import twins.helpers.CheckerHelper;
 
 @Service
-public class ItemsServiceImplementation implements ItemsService{
+public class ItemsServiceImplementation implements ItemServiceExtended{
 	private String name;
 	private ItemHandler itemHandler;
 	private ObjectMapper jackson;
@@ -97,10 +100,23 @@ public class ItemsServiceImplementation implements ItemsService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<ItemBoundary> getAllItems(String userSpace, String userEmail) {
+//		List<ItemBoundary> rv = new ArrayList<>();
+//		//get all entities
+//		Iterable<ItemEntity> allEntities = this.itemHandler.findAll();
+//		//covert them to boundaries and add to the array
+//		for (ItemEntity item : allEntities) {				
+//			rv.add(convertToBoundary(item));
+//		}
+//		return rv;
+		throw new RuntimeException("function canceled");
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<ItemBoundary> getAllItems(String userSpace, String userEmail, int size, int page) {
+		Page<ItemEntity> entitiesPage = this.itemHandler.findAll(PageRequest.of(page, size, Direction.ASC, "type", "createdTimestamp", "userEmail"));
 		List<ItemBoundary> rv = new ArrayList<>();
-		//get all entities
-		Iterable<ItemEntity> allEntities = this.itemHandler.findAll();
-		//covert them to boundaries and add to the array
+		Iterable<ItemEntity> allEntities = entitiesPage.getContent();
 		for (ItemEntity item : allEntities) {				
 			rv.add(convertToBoundary(item));
 		}
