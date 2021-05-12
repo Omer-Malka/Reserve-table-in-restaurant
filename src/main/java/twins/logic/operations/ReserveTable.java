@@ -1,14 +1,23 @@
 package twins.logic.operations;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import twins.boundaries.ItemBoundary;
+import twins.data.ItemHandler;
 
-
+@Component
 public class ReserveTable {
+	private ItemHandler itemHandler;
+	
+	
+	@Autowired
+	public ReserveTable(ItemHandler itemHandler) {
+		this.itemHandler = itemHandler;
+	}
 
 	public void reserve(String itemId, String time, String name) {
 		// TODO Auto-generated method stub
 		//get the item entity by itemid and update it
-		
 	}
 	
 	public ItemBoundary checkReservationTime(int numOfPeople, String time) {

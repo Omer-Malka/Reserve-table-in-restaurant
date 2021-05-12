@@ -20,6 +20,7 @@ import twins.boundaries.InvokedByBoundary;
 import twins.boundaries.OperationBoundary;
 import twins.boundaries.OperationIdBoundary;
 import twins.boundaries.UserIdBoundary;
+import twins.data.ItemHandler;
 import twins.data.OperationEntity;
 import twins.data.OperationHandler;
 import twins.helpers.CheckerHelper;
@@ -46,18 +47,17 @@ public  class OperationsServiceImplementation implements OperationsService {
 	private InitialTablesMap initialTablesMap;
 
 	@Autowired	
-	public OperationsServiceImplementation(OperationHandler operationHandler) {
-		super();
+	public OperationsServiceImplementation(OperationHandler operationHandler, ItemHandler itemHandler) {
 		this.operationHandler = operationHandler;
 		this.checker = new CheckerHelper();
 		this.jackson = new ObjectMapper();
 		this.cancelReservation = new CancelReservation();
 		this.changeReservationDetails = new ChangeReservationDetails();
-		this.reserveTable = new ReserveTable();
+		this.reserveTable = new ReserveTable(itemHandler);
 		this.clasp = new Clasp();
 		this.updateTablesMap = new UpdateTablesMap();
 		this.viewTableMap = new ViewTableMap();
-		this.initialTablesMap = new InitialTablesMap();
+		this.initialTablesMap = new InitialTablesMap(itemHandler);
 	}
 
 	@Value("${spring.application.name: 2021b.lidar.ben.david}")
