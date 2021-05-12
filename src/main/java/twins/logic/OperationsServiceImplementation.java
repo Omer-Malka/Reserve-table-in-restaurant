@@ -69,21 +69,21 @@ public  class OperationsServiceImplementation implements OperationsService {
 	@Transactional
 	public Object invokeOperation(OperationBoundary operation) {
 		//check input item boundary
-		if(!this.checker.checkOperationId(operation.getOperationId())) {
-			throw new RuntimeException("Id can not be null");
-		}
+		//		if(!this.checker.checkOperationId(operation.getOperationId())) {
+		//			throw new RuntimeException("Id can not be null");
+		//		}
 
 		if(!this.checker.checkOperationType(operation.getType())) {
 			throw new RuntimeException("Type can not be null");
 		}
 
-		if(!this.checker.checkOperationItem(operation.getItem())) {
-			throw new RuntimeException("Item can not be null");
-		}
+		//		if(!this.checker.checkOperationItem(operation.getItem())) {
+		//			throw new RuntimeException("Item can not be null");
+		//		}
 
-		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
-			throw new RuntimeException("User Id can not be null");
-		}
+		//		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
+		//			throw new RuntimeException("User Id can not be null");
+		//		}
 
 		//create new entity ,fill server's fields and save
 		OperationEntity entity = this.convertToEntity(operation);
@@ -98,8 +98,21 @@ public  class OperationsServiceImplementation implements OperationsService {
 			break;
 
 		case "reserveTable":
-//			this.reserveTable.reserve(entity);
-			
+			Map<String,Object> attributes = operation.getOperationAttributes();
+			String time = (String) attributes.get("time");
+			String numOfPeople = (String) attributes.get("capacity");
+			String name = (String) attributes.get("name");
+			if(InitialTablesMap.isInitialized()) {
+				String itemId = this.reserveTable.checkReservationTime(numOfPeople, time);
+				if(itemId != null) {
+					this.reserveTable.reserve(itemId, time, name);
+				}
+				else
+					throw new RuntimeException("There is no empty table in required time");
+			}
+			else
+				throw new RuntimeException("Tables map isn't initialized");
+
 			break;
 
 		case "changeReservationDetails":
@@ -119,10 +132,8 @@ public  class OperationsServiceImplementation implements OperationsService {
 			break;
 
 		case "initialTablesMap":
-			if(!InitialTablesMap.isInitialized()) {
-				this.initialTablesMap.storeTable(this.unmarshall(entity.getOperationAttributes(), Map.class), 
-						entity.getUserSpace(), entity.getUserEmail());
-			}
+			this.initialTablesMap.storeTable(this.unmarshall(entity.getOperationAttributes(), Map.class), 
+					entity.getUserSpace(), entity.getUserEmail());
 			break;
 
 		default:

@@ -153,7 +153,7 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 		return rv;
 	}
 	
-	private ItemEntity convertToEntity(ItemBoundary item) {
+	public ItemEntity convertToEntity(ItemBoundary item) {
 		ItemEntity entity = new ItemEntity();
 		entity.setName(item.getName());
 		entity.setType(item.getType());
@@ -165,7 +165,7 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 		return entity;
 	}
 	
-	private String marshall(Object value) {
+	public String marshall(Object value) {
 		try {
 			return this.jackson.writeValueAsString(value);
 		} catch (Exception e) {

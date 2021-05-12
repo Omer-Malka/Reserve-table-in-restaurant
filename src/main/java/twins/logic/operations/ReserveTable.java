@@ -3,10 +3,8 @@ package twins.logic.operations;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import twins.logic.ItemsService;
 import twins.boundaries.ItemBoundary;
 import twins.data.ItemEntity;
 import twins.data.ItemHandler;
@@ -28,22 +26,28 @@ public class ReserveTable {
 		Optional<ItemEntity> itemOp = this.itemHandler.findById(itemId);
 		if(itemOp.isPresent()) {
 			ItemEntity item = itemOp.get();
-			
+			ItemBoundary table = this.itemService.convertToBoundary(item);
+			Map<String,String> reservations = getReservationOfTable(table);
+			reservations.put(time, name);
+			item.setItemAttributes(this.itemService.marshall(reservations));
+			this.itemHandler.save(item);
 		}
 		else {
 			throw new RuntimeException("Item not exists");
-		}
-			
+		}	
 	}
 
 	public String checkReservationTime(String numOfPeople, String time) {
 		//get all tables with same capacity(capacity==numOfPeople)
-		List<ItemEntity> tables = itemHandler.findAllByItemAttributesLike("capacity=" + numOfPeople);
-		//check which table empty
-		for(ItemEntity table : tables) {
-			if(checksTime(this.itemService.convertToBoundary(table), time)) {
-				//return it if exists
-				return table.getItemId();
+		int capacity = Integer.parseInt(numOfPeople);
+		for(int i=0; i<capacity; i++) {
+			List<ItemEntity> tables = itemHandler.findAllByItemAttributesLike("capacity=" + String.valueOf(capacity+i));
+			//check which table empty
+			for(ItemEntity table : tables) {
+				if(checksTime(this.itemService.convertToBoundary(table), time)) {
+					//return it if exists
+					return table.getItemId();
+				}
 			}
 		}
 		return null;
@@ -51,22 +55,21 @@ public class ReserveTable {
 
 	private boolean checksTime(ItemBoundary table, String time) {
 		//checks item attributes.OccupancyTime if the table is empty in this time
-		Map<String,Object> tableAttributes = table.getItemAttributes();
-		Map<String,String> reservations = (Map<String, String>) tableAttributes.get("occupancyTime");
+		Map<String,String> reservations = getReservationOfTable(table);
 		//return the checking results
 		if(reservations.get(time) != "")
 			return true;
 		return false;
 	}
 
-	public String getBetterOption(int numOfPeople, String time) {
-		//suggest a better option of time and return this time
-		return time;	
+	private Map<String,String> getReservationOfTable(ItemBoundary table) {
+		Map<String,Object> tableAttributes = table.getItemAttributes();
+		return (Map<String, String>) tableAttributes.get("occupancyTime");
 	}
 	/*
 	 * operationAttributes:
 	 * name: String
-	 * capacity: int
+	 * capacity: String
 	 * time: String
 	 */
 
