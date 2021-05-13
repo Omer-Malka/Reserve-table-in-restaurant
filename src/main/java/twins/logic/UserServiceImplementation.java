@@ -67,7 +67,7 @@ public class UserServiceImplementation implements UserServiceExtended{
 		if (entity.isPresent()) {
 		return this.convertToBoundary(entity.get());
 		}else {
-			throw new RuntimeException("id could not be found");
+			throw new RuntimeException("Id could not be found");
 		}
 		
 	}
@@ -152,11 +152,16 @@ public class UserServiceImplementation implements UserServiceExtended{
 		return boundary;
 	}
 
+	
 	@Override
 	public List<UserBoundary> getAllUsers(String adminSpace, String adminMail) {
-		// TODO Auto-generated method stub
-		return null;
+		// STUB IMPLEMENT
+		throw new RuntimeException("function canceled");
 	}
+
+
+
+
 
 	
 	

@@ -4,7 +4,7 @@ public class NewUserDetails {
 
 	private String email;
 	private String role;
-	private String userName;
+	private String username;
 	private String avatar;
 	
 	public NewUserDetails() {
@@ -16,7 +16,7 @@ public class NewUserDetails {
 		this();
 		this.email = email;
 		this.role = role;
-		this.userName = userName;
+		this.username = userName;
 		this.avatar = avatar;
 	}
 
@@ -33,10 +33,10 @@ public class NewUserDetails {
 		this.role = role;
 	}
 	public String getUserName() {
-		return userName;
+		return username;
 	}
 	public void setUserName(String userName) {
-		this.userName = userName;
+		this.username = userName;
 	}
 	public String getAvatar() {
 		return avatar;
