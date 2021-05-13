@@ -16,4 +16,11 @@ public interface ItemHandler extends MongoRepository<ItemEntity, String> {
 	public List<ItemEntity> findAllByItemAttributesLike(
 			@Param("pattern") String pattern);
 
+	public List<ItemEntity> findAllByTypeAndActive(
+			@Param("type")String type,
+			@Param("active") boolean active);
+
+	public List<ItemEntity> findAllByType(
+			@Param("type")String type);
+
 }

@@ -78,15 +78,6 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
 			throw new RuntimeException("User Id can not be null");
 		}
-
-		//create new entity ,fill server's fields and save
-		OperationEntity entity = this.convertToEntity(operation);
-
-		//generate id + timestamp
-		entity.setUserEmail(operation.getInvokedBy().getUserId().getEmail());
-		entity.setUserSpace(operation.getInvokedBy().getUserId().getSpace());
-		entity.setCreatedTimestamp(new Date());
-		entity.setOperationId(this.name.concat("@").concat(UUID.randomUUID().toString()));
 		//insert to db
 		switch (operation.getType()) {
 		case "cancelReservation":
@@ -94,21 +85,31 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			break;
 
 		case "reserveTable":
-//			Map<String,Object> attributes = operation.getOperationAttributes();
-//			String time = (String) attributes.get("time");
-//			String numOfPeople = (String) attributes.get("capacity");
-//			String name = (String) attributes.get("name");
-//			if(InitialTablesMap.isInitialized()) {
-//				String itemId = this.reserveTable.checkReservationTime(numOfPeople, time);
-//				if(itemId != null) {
-//					this.reserveTable.reserve(itemId, time, name);
-//				}
-//				else
-//					throw new RuntimeException("There is no empty table in required time");
-//			}
-//			else
-//				throw new RuntimeException("Tables map isn't initialized");
-
+			/* operation attributes:
+			 * time: String -> "12-14-13-05"(hourStart-hourEnd-day-month) ->must
+			 * capacity: String ->must
+			 * customerName: String ->must
+			 * chosenTable String -> exists if the client chose a table from emptyTables list ->must
+			 * emptyTables: ArrayList<String> -> exists after posting reservation
+			 */
+			String numOfPeople = (String) operation.getOperationAttributes().get("capacity");
+			String time = (String) operation.getOperationAttributes().get("time");
+			String customerName = (String) operation.getOperationAttributes().get("customerName");
+			String chosenTable = (String)operation.getOperationAttributes().get("chosenTable");
+			String userSpace = operation.getInvokedBy().getUserId().getSpace();
+			String email = operation.getInvokedBy().getUserId().getEmail();
+			if(!this.checker.checkInputString(numOfPeople)
+					&&!this.checker.checkInputString(time)
+					&&!this.checker.checkInputString(customerName)){
+				throw new RuntimeException("attributes can't be null");
+			}
+			if(!chosenTable.isEmpty()) {
+				this.reserveTable.reserve(numOfPeople, customerName, chosenTable, time, userSpace, email, this.name);
+			}
+			else {
+				ArrayList<String> tables = this.reserveTable.findTables(numOfPeople, time);
+				operation.getOperationAttributes().put("emptyTables", tables);
+			}
 			break;
 
 		case "changeReservationDetails":
@@ -128,13 +129,27 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			break;
 
 		case "initialTablesMap":
-			this.initialTablesMap.storeTable(this.unmarshall(entity.getOperationAttributes(), Map.class), 
-					entity.getUserSpace(), entity.getUserEmail(),entity.getItemId());
+			/* operation attributes:
+			 * tableNumber: String 
+			 * capacity: String
+			 */
+			this.initialTablesMap.storeTable(operation.getOperationAttributes(), 
+					operation.getInvokedBy().getUserId().getSpace(), 
+					operation.getInvokedBy().getUserId().getEmail(),
+					operation.getItem().getItemId().getSpace()+"@"+operation.getItem().getItemId().getId());
 			break;
 
 		default:
 			break;
 		}
+		//create new entity ,fill server's fields and save
+		OperationEntity entity = this.convertToEntity(operation);
+
+		//generate id + timestamp
+		entity.setUserEmail(operation.getInvokedBy().getUserId().getEmail());
+		entity.setUserSpace(operation.getInvokedBy().getUserId().getSpace());
+		entity.setCreatedTimestamp(new Date());
+		entity.setOperationId(this.name.concat("@").concat(UUID.randomUUID().toString()));
 		return this.convertToBoundary(this.operationHandler.save(entity));
 	}
 

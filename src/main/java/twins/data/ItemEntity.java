@@ -1,10 +1,7 @@
 package twins.data;
 
 import java.util.Date;
-
-
-
-
+import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -24,7 +21,7 @@ public class ItemEntity {
 	private Double locationLat;
 	private Double locationLng;
 	//findbyItemAtributes_x_x1
-	private String itemAttributes;
+	private Map<String,Object> itemAttributes;
 	
 	public ItemEntity() {
 		
@@ -87,10 +84,10 @@ public class ItemEntity {
 		this.locationLng = locationLng;
 	}
 
-	public String getItemAttributes() {
+	public Map<String,Object> getItemAttributes() {
 		return itemAttributes;
 	}
-	public void setItemAttributes(String itemAttributes) {
+	public void setItemAttributes(Map<String,Object> itemAttributes) {
 		this.itemAttributes = itemAttributes;
 	}
 }

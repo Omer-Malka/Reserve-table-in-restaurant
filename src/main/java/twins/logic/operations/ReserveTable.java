@@ -1,70 +1,62 @@
 package twins.logic.operations;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import twins.boundaries.ItemBoundary;
 import twins.data.ItemEntity;
 import twins.data.ItemHandler;
-import twins.logic.ItemsServiceImplementation;
 
 @Component
 public class ReserveTable {
 	private ItemHandler itemHandler;
-	private ItemsServiceImplementation itemService;
 
 	@Autowired
 	public ReserveTable(ItemHandler itemHandler) {
 		this.itemHandler = itemHandler;
-		this.itemService = new ItemsServiceImplementation(itemHandler);
 	}
 
-	public void reserve(String itemId) {
-		//get the item entity by itemid and update it
-		Optional<ItemEntity> itemOp = this.itemHandler.findById(itemId);
-		if(itemOp.isPresent()) {
-			ItemEntity item = itemOp.get();
-			ItemBoundary reservation = this.itemService.convertToBoundary(item);
-			String time = (String) reservation.getItemAttributes().get("time");
-			String name = (String) reservation.getName();
-			String numOfPeople = (String) reservation.getItemAttributes().get("capacity");
-		}
-		else {
-			throw new RuntimeException("Item not exists");
-		}	
+	public void reserve(String numOfPeople, String customerName, String tableNum, String time, String userSpace, String userEmail, String space) {
+		ItemEntity reservation = new ItemEntity();
+		reservation.setName(tableNum + "-" + time);
+		reservation.setActive(true);
+		reservation.setCreatedTimestamp(new Date());
+		reservation.setType("reservation");
+		reservation.setItemId(userSpace+"@"+UUID.randomUUID().toString());
+		reservation.setUserEmail(userEmail);
+		reservation.setUserSpace(space);
+		Map<String,Object> attr = new HashMap<>();
+		attr.put("name", customerName);
+		attr.put("numOfPeople", numOfPeople);
+		reservation.setItemAttributes(attr);
+		itemHandler.save(reservation);
 	}
-
-	public String checkReservationTime(String numOfPeople, String time) {
-		//get all tables with same capacity(capacity==numOfPeople)
-		int capacity = Integer.parseInt(numOfPeople);
-		for(int i=0; i<capacity; i++) {
-			List<ItemEntity> tables = itemHandler.findAllByItemAttributesLike("\"capacity\":\"" + String.valueOf(capacity+i)+ "\"");
-			//check which table empty
-			for(ItemEntity table : tables) {
-				if(checksTime(this.itemService.convertToBoundary(table), time)) {
-					//return it if exists
-					return table.getItemId();
-				}
+	//name: numOfTable-time
+	//active: true -> occupied
+	public ArrayList<String> findTables(String numOfPeople, String time){ // "10", "12-14-13-05"(hourStart-hourEnd-day-month)
+		List<ItemEntity> reservations = itemHandler.findAllByTypeAndActive("reservation",true);
+		ArrayList<String> occupiedTables = new ArrayList<>();
+		for(ItemEntity reservation: reservations) {
+			if(reservation.getName().contains(time)) {
+				occupiedTables.add(reservation.getName().split("-")[0]);
 			}
 		}
-		return null;
+		List<ItemEntity> tables = itemHandler.findAllByType("Table");
+		ArrayList<String> unOccupiedTables = new ArrayList<>();
+		for(ItemEntity table:tables) {
+			int capacity = Integer.parseInt((String) table.getItemAttributes().get("capacity"));
+			int people = Integer.parseInt(numOfPeople);			
+			if(!occupiedTables.contains(table.getName())&&capacity>=people){
+				unOccupiedTables.add(table.getName());
+			}
+		}
+		return unOccupiedTables;
 	}
 
-	private boolean checksTime(ItemBoundary table, String time) {
-		//checks item attributes.OccupancyTime if the table is empty in this time
-		Map<String,String> reservations = getReservationOfTable(table);
-		//return the checking results
-		if(reservations.get(time) != "")
-			return true;
-		return false;
-	}
-
-	private Map<String,String> getReservationOfTable(ItemBoundary table) {
-		Map<String,Object> tableAttributes = table.getItemAttributes();
-		return (Map<String, String>) tableAttributes.get("occupancyTime");
-	}
 	/* getting
 	 * itemId: reservation Id
 	 * itemAttributes:

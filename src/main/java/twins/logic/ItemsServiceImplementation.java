@@ -14,7 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.ObjectMapper;
 import twins.boundaries.CreatedByBoundary;
 import twins.boundaries.ItemBoundary;
 import twins.boundaries.ItemIdBoundary;
@@ -28,7 +28,7 @@ import twins.helpers.CheckerHelper;
 public class ItemsServiceImplementation implements ItemServiceExtended{
 	private String name;
 	private ItemHandler itemHandler;
-	private ObjectMapper jackson;
+//	private ObjectMapper jackson;
 	private CheckerHelper checker;
 
 	@Autowired	
@@ -36,7 +36,7 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 		super();
 		this.itemHandler = itemHandler;
 		this.checker = new CheckerHelper();
-		this.jackson = new ObjectMapper();
+//		this.jackson = new ObjectMapper();
 	}
 	
 	@Value("${spring.application.name: 2021b.lidar.ben.david}")
@@ -145,7 +145,7 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 		rv.setActive(itemEntity.getActive()); 
 		rv.setCreatedBy(new CreatedByBoundary(new UserIdBoundary(itemEntity.getUserSpace(),itemEntity.getUserEmail())));
 		rv.setCreatedTimestamp(itemEntity.getCreatedTimestamp());
-		Map<String,Object> itemAttributes = this.unmarshall(itemEntity.getItemAttributes(),Map.class);
+		Map<String,Object> itemAttributes = itemEntity.getItemAttributes();
 		rv.setItemAttributes(itemAttributes);
 		rv.setLocation(new LocationBoundary(itemEntity.getLocationLat(),itemEntity.getLocationLng()));
 		rv.setName(itemEntity.getName());
@@ -160,26 +160,25 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 		entity.setLocationLat(item.getLocation().getLat());
 		entity.setLocationLng(item.getLocation().getLng());
 		entity.setActive(item.isActive());
-		String itemAttributes = this.marshall(item.getItemAttributes());
-		entity.setItemAttributes(itemAttributes);
+		entity.setItemAttributes(item.getItemAttributes());
 		return entity;
 	}
 	
-	public String marshall(Object value) {
-		try {
-			return this.jackson.writeValueAsString(value);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			throw new RuntimeException(e);
-		}
-	}
-	private <T> T unmarshall(String json, Class<T> requiredType) {
-		try {
-			return this.jackson.readValue(json, requiredType);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+//	public String marshall(Object value) {
+//		try {
+//			return this.jackson.writeValueAsString(value);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			throw new RuntimeException(e);
+//		}
+//	}
+//	private <T> T unmarshall(String json, Class<T> requiredType) {
+//		try {
+//			return this.jackson.readValue(json, requiredType);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 
 
