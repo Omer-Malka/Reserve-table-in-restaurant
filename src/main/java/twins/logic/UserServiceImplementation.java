@@ -92,6 +92,15 @@ public class UserServiceImplementation implements UserServiceExtended{
 	@Override
 	@Transactional(readOnly = true)
 	public List<UserBoundary> getAllUsers(String adminSpace, String adminMail, int size,int page) {
+		Optional<UserEntity> User=this.userHandler.findById(adminSpace+"%"+adminMail);
+		if(User.isPresent()) {
+			UserEntity userEn=User.get();
+			if(!(userEn.getRole()=="ADMIN")) {
+				throw new RuntimeException("The User is not autorizied to do this action");
+			}
+		}else {
+			throw new RuntimeException("Cant find the specific user");
+		}
 		Iterable<UserEntity> allUsers = this.userHandler.findAll(PageRequest.of(page, size, Direction.ASC, "id"));
 		List<UserBoundary> rv=new ArrayList<>();
 		if (allUsers!=null) {
