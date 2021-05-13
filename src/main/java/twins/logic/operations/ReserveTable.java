@@ -21,16 +21,15 @@ public class ReserveTable {
 		this.itemService = new ItemsServiceImplementation(itemHandler);
 	}
 
-	public void reserve(String itemId, String time, String name) {
+	public void reserve(String itemId) {
 		//get the item entity by itemid and update it
 		Optional<ItemEntity> itemOp = this.itemHandler.findById(itemId);
 		if(itemOp.isPresent()) {
 			ItemEntity item = itemOp.get();
-			ItemBoundary table = this.itemService.convertToBoundary(item);
-			Map<String,String> reservations = getReservationOfTable(table);
-			reservations.put(time, name);
-			item.setItemAttributes(this.itemService.marshall(reservations));
-			this.itemHandler.save(item);
+			ItemBoundary reservation = this.itemService.convertToBoundary(item);
+			String time = (String) reservation.getItemAttributes().get("time");
+			String name = (String) reservation.getName();
+			String numOfPeople = (String) reservation.getItemAttributes().get("capacity");
 		}
 		else {
 			throw new RuntimeException("Item not exists");
@@ -41,7 +40,7 @@ public class ReserveTable {
 		//get all tables with same capacity(capacity==numOfPeople)
 		int capacity = Integer.parseInt(numOfPeople);
 		for(int i=0; i<capacity; i++) {
-			List<ItemEntity> tables = itemHandler.findAllByItemAttributesLike("capacity=" + String.valueOf(capacity+i));
+			List<ItemEntity> tables = itemHandler.findAllByItemAttributesLike("\"capacity\":\"" + String.valueOf(capacity+i)+ "\"");
 			//check which table empty
 			for(ItemEntity table : tables) {
 				if(checksTime(this.itemService.convertToBoundary(table), time)) {
@@ -66,16 +65,19 @@ public class ReserveTable {
 		Map<String,Object> tableAttributes = table.getItemAttributes();
 		return (Map<String, String>) tableAttributes.get("occupancyTime");
 	}
-	/*
-	 * operationAttributes:
-	 * name: String
-	 * capacity: String
-	 * time: String
+	/* getting
+	 * itemId: reservation Id
+	 * itemAttributes:
+	 * type: String :"Reservation"
+	 * name: String : name of reserver
+	 * capacity: String : number of people in the reservation
+	 * time: String : time of the reservation
 	 */
 
-	/* item attributes(Map<String,Object>) :
+	/* need to change
+	 * item attributes(Map<String,Object>) :
 	 * tableNumber: String 
-	 * capacity: Integer
+	 * capacity: String
 	 * OccupancyTime: Map<String,String> of hours and who is reserved it for example : ("10-12": "lidar", "12-14": "")
 	 */
 

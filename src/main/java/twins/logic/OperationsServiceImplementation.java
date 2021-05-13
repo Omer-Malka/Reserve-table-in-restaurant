@@ -94,20 +94,20 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			break;
 
 		case "reserveTable":
-			Map<String,Object> attributes = operation.getOperationAttributes();
-			String time = (String) attributes.get("time");
-			String numOfPeople = (String) attributes.get("capacity");
-			String name = (String) attributes.get("name");
-			if(InitialTablesMap.isInitialized()) {
-				String itemId = this.reserveTable.checkReservationTime(numOfPeople, time);
-				if(itemId != null) {
-					this.reserveTable.reserve(itemId, time, name);
-				}
-				else
-					throw new RuntimeException("There is no empty table in required time");
-			}
-			else
-				throw new RuntimeException("Tables map isn't initialized");
+//			Map<String,Object> attributes = operation.getOperationAttributes();
+//			String time = (String) attributes.get("time");
+//			String numOfPeople = (String) attributes.get("capacity");
+//			String name = (String) attributes.get("name");
+//			if(InitialTablesMap.isInitialized()) {
+//				String itemId = this.reserveTable.checkReservationTime(numOfPeople, time);
+//				if(itemId != null) {
+//					this.reserveTable.reserve(itemId, time, name);
+//				}
+//				else
+//					throw new RuntimeException("There is no empty table in required time");
+//			}
+//			else
+//				throw new RuntimeException("Tables map isn't initialized");
 
 			break;
 

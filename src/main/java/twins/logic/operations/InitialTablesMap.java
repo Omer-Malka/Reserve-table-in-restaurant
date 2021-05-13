@@ -59,12 +59,12 @@ public class InitialTablesMap {
 		return rv;
 	}
 	 
-	/* operation attributes:
+	/* post: operation attributes:
 	 * tableNumber: String 
 	 * capacity: String
 	 */
 	
-	/* item attributes(Map<String,Object>) :
+	/* get: item attributes(Map<String,Object>) :
 	 * tableNumber: String 
 	 * capacity: String
 	 * OccupancyTime: Map<String,String> of hours and who is reserved it for example : ("10-12": "lidar", "12-14": "")

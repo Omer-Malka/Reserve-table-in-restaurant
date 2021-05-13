@@ -29,7 +29,6 @@ public class ItemEntity {
 		
 	}
 
-
 	public String getItemId() {
 		return this.itemId;
 	}
