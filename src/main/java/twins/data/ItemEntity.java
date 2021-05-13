@@ -23,6 +23,7 @@ public class ItemEntity {
 	private String userEmail;
 	private Double locationLat;
 	private Double locationLng;
+	//findbyItemAtributes_x_x1
 	private String itemAttributes;
 	
 	public ItemEntity() {

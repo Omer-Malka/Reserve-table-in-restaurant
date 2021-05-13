@@ -21,6 +21,7 @@ import twins.boundaries.UserBoundary;
 import twins.boundaries.UserIdBoundary;
 import twins.data.UserEntity;
 import twins.data.UserHandler;
+import twins.data.UserRole;
 
 @Service
 public class UserServiceImplementation implements UserServiceExtended{
@@ -95,7 +96,7 @@ public class UserServiceImplementation implements UserServiceExtended{
 		Optional<UserEntity> User=this.userHandler.findById(adminSpace+"%"+adminMail);
 		if(User.isPresent()) {
 			UserEntity userEn=User.get();
-			if(!(userEn.getRole()=="ADMIN")) {
+			if(!(userEn.getRole().equals(UserRole.ADMIN.name()) )) {
 				throw new RuntimeException("The User is not autorizied to do this action");
 			}
 		}else {
@@ -107,7 +108,7 @@ public class UserServiceImplementation implements UserServiceExtended{
 		for(UserEntity entity: allUsers)		
 			rv.add(convertToBoundary(entity));
 		}else {
-			throw new RuntimeException();
+			throw new RuntimeException("Cant find Users");
 		}
 		return rv;
 	}
@@ -116,7 +117,18 @@ public class UserServiceImplementation implements UserServiceExtended{
 	@Override
 	@Transactional
 	public void deleteAllUsers(String adminSpace, String adminMail) {
-		this.userHandler.deleteAll();
+		Optional<UserEntity> userTmp=this.userHandler.findById(adminSpace+"%"+adminMail);
+		if(userTmp.isPresent()) {
+			if(userTmp.get().getRole().equals(UserRole.ADMIN.name()) ) {
+				this.userHandler.deleteAll();
+			}else {
+				throw new RuntimeException("User not Autorizied to do this action");
+			}
+			
+		}else {
+			throw new RuntimeException("User not exist");
+		}
+		
 		
 	}
 
