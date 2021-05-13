@@ -5,20 +5,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-
 import twins.boundaries.InvokedByBoundary;
-
+import twins.boundaries.Item;
+import twins.boundaries.ItemIdBoundary;
 import twins.boundaries.OperationBoundary;
 import twins.boundaries.OperationIdBoundary;
 import twins.boundaries.UserIdBoundary;
@@ -70,27 +66,25 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	@Override
 	@Transactional
 	public Object invokeOperation(OperationBoundary operation) {
-		//check input item boundary
-		//		if(!this.checker.checkOperationId(operation.getOperationId())) {
-		//			throw new RuntimeException("Id can not be null");
-		//		}
-
+		//check input 
 		if(!this.checker.checkOperationType(operation.getType())) {
 			throw new RuntimeException("Type can not be null");
 		}
 
-		//		if(!this.checker.checkOperationItem(operation.getItem())) {
-		//			throw new RuntimeException("Item can not be null");
-		//		}
+		if(!this.checker.checkOperationItem(operation.getItem())) {
+			throw new RuntimeException("Item can not be null");
+		}
 
-		//		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
-		//			throw new RuntimeException("User Id can not be null");
-		//		}
+		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
+			throw new RuntimeException("User Id can not be null");
+		}
 
 		//create new entity ,fill server's fields and save
 		OperationEntity entity = this.convertToEntity(operation);
 
 		//generate id + timestamp
+		entity.setUserEmail(operation.getInvokedBy().getUserId().getEmail());
+		entity.setUserSpace(operation.getInvokedBy().getUserId().getSpace());
 		entity.setCreatedTimestamp(new Date());
 		entity.setOperationId(this.name.concat("@").concat(UUID.randomUUID().toString()));
 		//insert to db
@@ -135,7 +129,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 
 		case "initialTablesMap":
 			this.initialTablesMap.storeTable(this.unmarshall(entity.getOperationAttributes(), Map.class), 
-					entity.getUserSpace(), entity.getUserEmail());
+					entity.getUserSpace(), entity.getUserEmail(),entity.getItemId());
 			break;
 
 		default:
@@ -146,10 +140,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 
 	@Override
 	public OperationBoundary invokeAsynchronousOperation(OperationBoundary operation) {
-		if(!this.checker.checkOperationId(operation.getOperationId())) {
-			throw new RuntimeException("id can not be null");
-		}
-
+		//check input 
 		if(!this.checker.checkOperationType(operation.getType())) {
 			throw new RuntimeException("Type can not be null");
 		}
@@ -166,6 +157,8 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		OperationEntity entity = this.convertToEntity(operation);
 
 		//generate id + timestamp
+		entity.setUserEmail(operation.getInvokedBy().getUserId().getEmail());
+		entity.setUserSpace(operation.getInvokedBy().getUserId().getSpace());
 		entity.setCreatedTimestamp(new Date());
 		entity.setOperationId(this.name.concat("@").concat(UUID.randomUUID().toString()));
 		//insert to db
@@ -198,11 +191,13 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		rv.setCreatedTimestamp(operation.getCreatedTimestamp());
 		Map<String,Object> operationAttributes = this.unmarshall(operation.getOperationAttributes(),Map.class);
 		rv.setOperationAttributes(operationAttributes);
+		rv.setItem(new Item(new ItemIdBoundary(operation.getItemId().split("@")[0], operation.getItemId().split("@")[1])));
 		return rv;
 	}
 
 	private OperationEntity convertToEntity(OperationBoundary operation) {
 		OperationEntity entity = new OperationEntity();
+		entity.setItemId(operation.getItem().getItemId().getSpace().concat("@").concat(operation.getItem().getItemId().getId()));
 		entity.setType(operation.getType());
 		String operationAttributes = this.marshall(operation.getOperationAttributes());
 		entity.setOperationAttributes(operationAttributes);
