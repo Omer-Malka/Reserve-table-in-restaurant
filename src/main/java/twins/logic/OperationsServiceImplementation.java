@@ -1,5 +1,7 @@
 package twins.logic;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +51,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		this.operationHandler = operationHandler;
 		this.checker = new CheckerHelper();
 		this.jackson = new ObjectMapper();
-		this.cancelReservation = new CancelReservation();
+		this.cancelReservation = new CancelReservation(itemHandler);
 		this.changeReservationDetails = new ChangeReservationDetails();
 		this.reserveTable = new ReserveTable(itemHandler);
 		this.clasp = new Clasp();
@@ -81,7 +83,30 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		//insert to db
 		switch (operation.getType()) {
 		case "cancelReservation":
-
+			/* operation attributes:
+			 * option : String -> cancelAllPassedReservation for the automatic deleting
+			 * time: String -> "12-14-13-05"(hourStart-hourEnd-day-month) ->must
+			 * name: String ->must
+			 */
+			String option = (String)operation.getOperationAttributes().get("option");
+			if(!this.checker.checkInputString(option))
+				throw new RuntimeException("option can't be null");
+			if(option.equals("cancelAllPassedReservation")) {
+				DateFormat df = new SimpleDateFormat("HH-dd-MM");
+				Date dateobj = new Date();
+				String date = df.format(dateobj);//(untilHour-day-month)
+				this.cancelReservation.cancelAllPassedReservation(date);
+			}
+			else {
+				String name = (String)operation.getOperationAttributes().get("name");
+				String timeOfRes = (String)operation.getOperationAttributes().get("time");
+				String email = operation.getInvokedBy().getUserId().getEmail();
+				if(!this.checker.checkInputString(name)
+						&&!this.checker.checkInputString(timeOfRes)){
+					throw new RuntimeException("attributes can't be null");
+				}
+				this.cancelReservation.cancelReservation(name, timeOfRes, email);
+			}
 			break;
 
 		case "reserveTable":
@@ -113,14 +138,14 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			break;
 
 		case "changeReservationDetails":
-
+			
 			break;
 
 		case "clasp":
 
 			break;
 
-		case "updateRestaurantDetails":
+		case "updateTablesMap":
 
 			break;
 

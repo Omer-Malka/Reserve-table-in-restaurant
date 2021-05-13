@@ -3,8 +3,10 @@ package twins.logic.operations;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,22 +40,34 @@ public class ReserveTable {
 	//name: numOfTable-time
 	//active: true -> occupied
 	public ArrayList<String> findTables(String numOfPeople, String time){ // "10", "12-14-13-05"(hourStart-hourEnd-day-month)
-		List<ItemEntity> reservations = itemHandler.findAllByTypeAndActive("reservation",true);
+		List<ItemEntity> activeReservations = itemHandler.findAllByTypeAndActive("reservation",true);
+		List<ItemEntity> canceledReservations = itemHandler.findAllByTypeAndActive("reservation",false);
+		ArrayList<String> unOccupiedTables = new ArrayList<>();
+		Set<String> set = new LinkedHashSet<>();
+		List<ItemEntity> tables = itemHandler.findAllByType("Table");
 		ArrayList<String> occupiedTables = new ArrayList<>();
-		for(ItemEntity reservation: reservations) {
+		
+		for(ItemEntity reservation : activeReservations) {
 			if(reservation.getName().contains(time)) {
 				occupiedTables.add(reservation.getName().split("-")[0]);
 			}
 		}
-		List<ItemEntity> tables = itemHandler.findAllByType("Table");
-		ArrayList<String> unOccupiedTables = new ArrayList<>();
-		for(ItemEntity table:tables) {
+		for(ItemEntity reservation : canceledReservations) {
+			if(reservation.getName().contains(time)) {
+				unOccupiedTables.add(reservation.getName().split("-")[0]);
+			}
+		}
+		for(ItemEntity table : tables) {
 			int capacity = Integer.parseInt((String) table.getItemAttributes().get("capacity"));
 			int people = Integer.parseInt(numOfPeople);			
 			if(!occupiedTables.contains(table.getName())&&capacity>=people){
 				unOccupiedTables.add(table.getName());
 			}
 		}
+		//avoid duplicates
+		set.addAll(unOccupiedTables);
+		unOccupiedTables.clear();
+		unOccupiedTables.addAll(set);
 		return unOccupiedTables;
 	}
 

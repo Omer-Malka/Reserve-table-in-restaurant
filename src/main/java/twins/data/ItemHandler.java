@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface ItemHandler extends MongoRepository<ItemEntity, String> {
 
 	public Page<ItemEntity> findAllByUserSpaceAndUserEmail(
-			@Param("userSpace")String userSpace, 
+			@Param("userSpace") String userSpace, 
 			@Param("userEmail") String userEmail, 
 			Pageable pegeable);
 
@@ -17,10 +17,25 @@ public interface ItemHandler extends MongoRepository<ItemEntity, String> {
 			@Param("pattern") String pattern);
 
 	public List<ItemEntity> findAllByTypeAndActive(
-			@Param("type")String type,
+			@Param("type") String type,
 			@Param("active") boolean active);
 
 	public List<ItemEntity> findAllByType(
-			@Param("type")String type);
+			@Param("type") String type);
+
+	public List<ItemEntity> findAllByTypeAndNameLike(
+			@Param("type") String type,
+			@Param("pattern") String pattern);
+
+	public List<ItemEntity> findAllByActiveAndTypeAndNameLike(
+			@Param("active")boolean active, 
+			@Param("type")String type, 
+			@Param("pattern") String pattern);
+
+	public List<ItemEntity> findAllByUserEmailAndActiveAndTypeAndNameLike(
+			@Param("email") String email, 
+			@Param("active") boolean active, 
+			@Param("type") String type, 
+			@Param("pattern") String pattern);
 
 }
