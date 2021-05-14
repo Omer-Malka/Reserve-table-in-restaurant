@@ -25,7 +25,6 @@ import twins.data.OperationEntity;
 import twins.data.OperationHandler;
 import twins.helpers.CheckerHelper;
 import twins.logic.operations.CancelReservation;
-import twins.logic.operations.ChangeReservationDetails;
 import twins.logic.operations.Clasp;
 import twins.logic.operations.InitialTablesMap;
 import twins.logic.operations.ReserveTable;
@@ -40,7 +39,6 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	private CheckerHelper checker;
 	private ReserveTable reserveTable;
 	private CancelReservation cancelReservation;
-	private ChangeReservationDetails changeReservationDetails;
 	private Clasp clasp;
 	private UpdateTablesMap updateTablesMap;
 	private ViewTableMap viewTableMap;
@@ -52,7 +50,6 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		this.checker = new CheckerHelper();
 		this.jackson = new ObjectMapper();
 		this.cancelReservation = new CancelReservation(itemHandler);
-		this.changeReservationDetails = new ChangeReservationDetails();
 		this.reserveTable = new ReserveTable(itemHandler);
 		this.clasp = new Clasp();
 		this.updateTablesMap = new UpdateTablesMap();
