@@ -79,7 +79,6 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		}
 		String email = operation.getInvokedBy().getUserId().getEmail();
 		String userSpace = operation.getInvokedBy().getUserId().getSpace();
-		//insert to db
 		switch (operation.getType()) {
 		case "cancelReservation":
 			/* operation attributes:
@@ -171,9 +170,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			 * tableNumber: String 
 			 * capacity: String
 			 */
-			this.initialTablesMap.storeTable(operation.getOperationAttributes(), 
-					operation.getInvokedBy().getUserId().getSpace(), 
-					operation.getInvokedBy().getUserId().getEmail(),
+			this.initialTablesMap.storeTable(operation.getOperationAttributes(), userSpace, email,
 					operation.getItem().getItemId().getSpace()+"@"+operation.getItem().getItemId().getId());
 			break;
 
@@ -182,12 +179,12 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		}
 		//create new entity ,fill server's fields and save
 		OperationEntity entity = this.convertToEntity(operation);
-
 		//generate id + timestamp
 		entity.setUserEmail(operation.getInvokedBy().getUserId().getEmail());
 		entity.setUserSpace(operation.getInvokedBy().getUserId().getSpace());
 		entity.setCreatedTimestamp(new Date());
 		entity.setOperationId(this.name.concat("@").concat(UUID.randomUUID().toString()));
+		//insert to db
 		return this.convertToBoundary(this.operationHandler.save(entity));
 	}
 
