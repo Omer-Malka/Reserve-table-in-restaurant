@@ -38,4 +38,9 @@ public interface ItemHandler extends MongoRepository<ItemEntity, String> {
 			@Param("type") String type, 
 			@Param("pattern") String pattern);
 
+	public List<ItemEntity> findAllByUserEmailAndType(
+			@Param("email")String email, 
+			@Param("type")String type);
+
+
 }

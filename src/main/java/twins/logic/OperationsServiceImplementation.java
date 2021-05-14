@@ -16,10 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import twins.boundaries.InvokedByBoundary;
 import twins.boundaries.Item;
+import twins.boundaries.ItemBoundary;
 import twins.boundaries.ItemIdBoundary;
 import twins.boundaries.OperationBoundary;
 import twins.boundaries.OperationIdBoundary;
 import twins.boundaries.UserIdBoundary;
+import twins.data.ItemEntity;
 import twins.data.ItemHandler;
 import twins.data.OperationEntity;
 import twins.data.OperationHandler;
@@ -28,6 +30,7 @@ import twins.logic.operations.CancelReservation;
 import twins.logic.operations.Clasp;
 import twins.logic.operations.InitialTablesMap;
 import twins.logic.operations.ReserveTable;
+import twins.logic.operations.ShowPreviousReservations;
 import twins.logic.operations.UpdateTablesMap;
 import twins.logic.operations.ViewTableMap;
 
@@ -43,6 +46,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	private UpdateTablesMap updateTablesMap;
 	private ViewTableMap viewTableMap;
 	private InitialTablesMap initialTablesMap;
+	private ShowPreviousReservations showPreviousReservations;
 
 	@Autowired	
 	public OperationsServiceImplementation(OperationHandler operationHandler, ItemHandler itemHandler) {
@@ -55,6 +59,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		this.updateTablesMap = new UpdateTablesMap();
 		this.viewTableMap = new ViewTableMap();
 		this.initialTablesMap = new InitialTablesMap(itemHandler);
+		this.showPreviousReservations = new ShowPreviousReservations(itemHandler);
 	}
 
 	@Value("${spring.application.name: 2021b.lidar.ben.david}")
@@ -172,6 +177,13 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			 */
 			this.initialTablesMap.storeTable(operation.getOperationAttributes(), userSpace, email,
 					operation.getItem().getItemId().getSpace()+"@"+operation.getItem().getItemId().getId());
+			break;
+		case "showPreviousReservations":
+			/* operation attributes:
+			 * previousReservations: List<ItemBoundary> prevoiusReservations ->after invoking
+			 */
+			List<ItemBoundary> prevoiusReservations = this.showPreviousReservations.showReservations(email);
+			operation.getOperationAttributes().put("previousReservations", prevoiusReservations);
 			break;
 
 		default:
