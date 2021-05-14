@@ -80,6 +80,8 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
 			throw new RuntimeException("User Id can not be null");
 		}
+		String email = operation.getInvokedBy().getUserId().getEmail();
+		String userSpace = operation.getInvokedBy().getUserId().getSpace();
 		//insert to db
 		switch (operation.getType()) {
 		case "cancelReservation":
@@ -100,7 +102,6 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			else {
 				String name = (String)operation.getOperationAttributes().get("name");
 				String timeOfRes = (String)operation.getOperationAttributes().get("time");
-				String email = operation.getInvokedBy().getUserId().getEmail();
 				if(!this.checker.checkInputString(name)
 						&&!this.checker.checkInputString(timeOfRes)){
 					throw new RuntimeException("attributes can't be null");
@@ -121,8 +122,6 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			String time = (String) operation.getOperationAttributes().get("time");
 			String customerName = (String) operation.getOperationAttributes().get("customerName");
 			String chosenTable = (String)operation.getOperationAttributes().get("chosenTable");
-			String userSpace = operation.getInvokedBy().getUserId().getSpace();
-			String email = operation.getInvokedBy().getUserId().getEmail();
 			if(!this.checker.checkInputString(numOfPeople)
 					&&!this.checker.checkInputString(time)
 					&&!this.checker.checkInputString(customerName)){
@@ -138,7 +137,24 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			break;
 
 		case "changeReservationDetails":
-			
+			/* operation attributes:
+			 * capacity: String
+			 * newTime: String(hourStart-hourEnd-day-month)
+			 * oldTime: String(hourStart-hourEnd-day-month)
+			 * name: String
+			 */
+			String newCapacity = (String) operation.getOperationAttributes().get("capacity");
+			String newTime = (String) operation.getOperationAttributes().get("newTime");
+			String oldTime = (String) operation.getOperationAttributes().get("oldTime");
+			String nameOfChanger = (String) operation.getOperationAttributes().get("name");
+			ArrayList<String> tables = this.reserveTable.findTables(newCapacity, newTime);
+			if(!tables.isEmpty()) {
+				this.cancelReservation.cancelReservation(nameOfChanger, oldTime, email);
+				this.reserveTable.reserve(newCapacity, nameOfChanger, tables.get(0), newTime, userSpace, email, this.name);
+			}
+			else {
+				throw new RuntimeException("Cant replace reservation");
+			}
 			break;
 
 		case "clasp":
