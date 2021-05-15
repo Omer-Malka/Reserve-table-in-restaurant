@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import twins.boundaries.InvokedByBoundary;
 import twins.boundaries.Item;
 import twins.boundaries.ItemBoundary;
@@ -21,7 +22,6 @@ import twins.boundaries.ItemIdBoundary;
 import twins.boundaries.OperationBoundary;
 import twins.boundaries.OperationIdBoundary;
 import twins.boundaries.UserIdBoundary;
-import twins.data.ItemEntity;
 import twins.data.ItemHandler;
 import twins.data.OperationEntity;
 import twins.data.OperationHandler;
@@ -38,7 +38,7 @@ import twins.logic.operations.ViewTableMap;
 public  class OperationsServiceImplementation implements OperationsServiceExtended {
 	private String name;
 	private OperationHandler operationHandler;
-	private ObjectMapper jackson;
+	//private ObjectMapper jackson;
 	private CheckerHelper checker;
 	private ReserveTable reserveTable;
 	private CancelReservation cancelReservation;
@@ -52,7 +52,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	public OperationsServiceImplementation(OperationHandler operationHandler, ItemHandler itemHandler) {
 		this.operationHandler = operationHandler;
 		this.checker = new CheckerHelper();
-		this.jackson = new ObjectMapper();
+		//this.jackson = new ObjectMapper();
 		this.cancelReservation = new CancelReservation(itemHandler);
 		this.reserveTable = new ReserveTable(itemHandler);
 		this.clasp = new Clasp();
@@ -246,23 +246,25 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	}
 
 	private OperationBoundary convertToBoundary(OperationEntity operation) {
-		OperationBoundary rv = new OperationBoundary();
-		rv.setOperationId(new OperationIdBoundary(this.name, operation.getOperationId()));
-		rv.setType(operation.getType()); 
-		rv.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(operation.getUserSpace(),operation.getUserEmail())));
-		rv.setCreatedTimestamp(operation.getCreatedTimestamp());
-		Map<String,Object> operationAttributes = this.unmarshall(operation.getOperationAttributes(),Map.class);
-		rv.setOperationAttributes(operationAttributes);
-		rv.setItem(new Item(new ItemIdBoundary(operation.getItemId().split("@")[0], operation.getItemId().split("@")[1])));
-		return rv;
+		OperationBoundary boundary = new OperationBoundary();
+		boundary.setOperationId(new OperationIdBoundary(this.name, operation.getOperationId()));
+		boundary.setType(operation.getType()); 
+		boundary.setItem(new Item(new ItemIdBoundary(operation.getItemId().split("@")[0], operation.getItemId().split("@")[1])));
+		//rv.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(operation.getUserSpace(),operation.getUserEmail())));
+		boundary.setCreatedTimestamp(operation.getCreatedTimestamp());
+		boundary.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(operation.getUserSpace(), operation.getUserEmail())));
+		Map<String,Object> operationAttributes = operation.getOperationAttributes();
+		boundary.setOperationAttributes(operationAttributes);
+		return boundary;
 	}
 
 	private OperationEntity convertToEntity(OperationBoundary operation) {
 		OperationEntity entity = new OperationEntity();
-		entity.setItemId(operation.getItem().getItemId().getSpace().concat("@").concat(operation.getItem().getItemId().getId()));
+		entity.setOperationId(operation.getOperationId().getId());
 		entity.setType(operation.getType());
-		String operationAttributes = this.marshall(operation.getOperationAttributes());
-		entity.setOperationAttributes(operationAttributes);
+		entity.setItemId(operation.getItem().getItemId().getSpace().concat("@").concat(operation.getItem().getItemId().getId()));
+		entity.setCreatedTimestamp(operation.getCreatedTimestamp());
+		entity.setOperationAttributes(operation.getOperationAttributes());
 		return entity;
 	}
 
@@ -273,7 +275,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		this.operationHandler.deleteAll();
 
 	}
-	private String marshall(Object value) {
+/*	private String marshall(Object value) {
 		try {
 			return this.jackson.writeValueAsString(value);
 		} catch (Exception e) {
@@ -288,7 +290,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			throw new RuntimeException(e);
 		}
 	}
-
+*/
 	@Override
 	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
 		// TODO Auto-generated method stub

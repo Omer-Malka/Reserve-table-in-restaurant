@@ -1,8 +1,7 @@
 package twins.data;
 
 import java.util.Date;
-
-
+import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,7 +22,7 @@ public class OperationEntity {
 	private Date createdTimestamp;
 	private String userEmail;
 	private String userSpace;
-	private String operationAttributes;
+	private Map<String,Object>  operationAttributes;
 	
 	
 	public OperationEntity() {
@@ -60,12 +59,12 @@ public class OperationEntity {
 	}
 
 	
-	public String getOperationAttributes() {
+	public Map<String,Object> getOperationAttributes() {
 		return operationAttributes;
 	}
 
 	
-	public void setOperationAttributes(String operationAttributes) {
+	public void setOperationAttributes(Map<String,Object>  operationAttributes) {
 		this.operationAttributes = operationAttributes;
 	}
 
