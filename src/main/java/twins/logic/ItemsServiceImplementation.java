@@ -22,6 +22,7 @@ import twins.boundaries.LocationBoundary;
 import twins.boundaries.UserIdBoundary;
 import twins.data.ItemEntity;
 import twins.data.ItemHandler;
+import twins.helpers.CheckerAuthorization;
 //import twins.helpers.CheckerAuthorization;
 import twins.helpers.CheckerHelper;
 
@@ -31,7 +32,7 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 	private ItemHandler itemHandler;
 //	private ObjectMapper jackson;
 	private CheckerHelper checker;
-//	private CheckerAuthorization checkAuth;
+	private CheckerAuthorization checkAuth;
 	@Autowired	
 	public ItemsServiceImplementation(ItemHandler itemHandler) {
 		super();
@@ -60,6 +61,9 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 	@Override
 	@Transactional
 	public ItemBoundary createItem(String userSpace, String userEmail, ItemBoundary item) {
+		//check if the user is manager
+		if(!checkAuth.CheckManagerUser(userSpace+"%"+userEmail))
+			throw new RuntimeException("User not authorized to do this action");
 		//check input item boundary
 		if(!this.checker.checkInputString(item.getName()) 
 				|| !this.checker.checkInputString(item.getType())) {
@@ -79,6 +83,9 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 	@Override
 	@Transactional
 	public void updateItem(String userSpace, String userEmail, String itemSpace, String itemId, ItemBoundary update) {
+		//check if the user is manager
+		if(!checkAuth.CheckManagerUser(userSpace+"%"+userEmail))
+			throw new RuntimeException("User not authorized to do this action");
 		String newItemId = itemSpace + "@" + itemId;
 		Optional<ItemEntity> itemOp = this.itemHandler.findById(newItemId);
 		if(itemOp.isPresent() 
@@ -116,6 +123,11 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 	@Override
 	@Transactional(readOnly = true)
 	public List<ItemBoundary> getAllItems(String userSpace, String userEmail, int size, int page) {
+		//check if the user is manager
+		if(checkAuth.CheckManagerUser(userSpace+"%"+userEmail)||checkAuth.CheckPlayerUser(userSpace+"%"+userEmail))
+			throw new RuntimeException("User not authorized to do this action");
+		
+		//if yes 
 		Page<ItemEntity> entitiesPage = this.itemHandler.findAllByUserSpaceAndUserEmail(userSpace, userEmail, PageRequest.of(page, size, Direction.ASC, "type", "createdTimestamp", "itemId"));
 		List<ItemBoundary> rv = new ArrayList<>();
 		Iterable<ItemEntity> allEntities = entitiesPage.getContent();
@@ -128,17 +140,22 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 	@Override
 	@Transactional(readOnly = true)
 	public ItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId) {
-		// find item entity by id
-		String newItemId = itemSpace + "@" + itemId;
-		Optional<ItemEntity> itemOp = this.itemHandler.findById(newItemId);
-		//if it not empty convert to boundary and return
-		if(itemOp.isPresent() 
-				&& this.checker.checkInputString(itemId)) {
-			return convertToBoundary(itemOp.get());
-		}
-		else {
-			throw new RuntimeException();
-		}
+		//check if the user is manager or player
+		if(checkAuth.CheckManagerUser(userSpace+"%"+userEmail)||checkAuth.CheckPlayerUser(userSpace+"%"+userEmail)) {
+			// find item entity by id
+			String newItemId = itemSpace + "@" + itemId;
+			Optional<ItemEntity> itemOp = this.itemHandler.findById(newItemId);
+			//if it not empty convert to boundary and return
+			if(itemOp.isPresent() 
+					&& this.checker.checkInputString(itemId)) {
+				return convertToBoundary(itemOp.get());
+			}
+			else {
+				throw new RuntimeException();
+			}
+		}else
+			throw new RuntimeException("User not authorized to do this action");
+	
 	}
 	
 	public ItemBoundary convertToBoundary(ItemEntity itemEntity) {

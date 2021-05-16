@@ -22,30 +22,31 @@ import twins.boundaries.UserIdBoundary;
 import twins.data.UserEntity;
 import twins.data.UserHandler;
 import twins.data.UserRole;
+import twins.helpers.CheckerAuthorization;
 
 @Service
 public class UserServiceImplementation implements UserServiceExtended{
 	private UserHandler userHandler;
 	private String name;
-	
-	
+	private CheckerAuthorization checker;
+
 	@Autowired
 	public UserServiceImplementation(UserHandler userHandler) {
 		super();
 		this.userHandler = userHandler;
-		
+
 	}
-	
+
 	@Value("${spring.application.name: 2021b.lidar.ben.david}")
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@PostConstruct
 	public void init() {
 		System.err.println("name: "+this.name);
 	}
-	
+
 
 	@Override
 	@Transactional
@@ -65,11 +66,11 @@ public class UserServiceImplementation implements UserServiceExtended{
 	public UserBoundary login(String userSpace, String userEmail) {
 		Optional<UserEntity> entity=this.userHandler.findById(userSpace+"%"+userEmail);
 		if (entity.isPresent()) {
-		return this.convertToBoundary(entity.get());
+			return this.convertToBoundary(entity.get());
 		}else {
 			throw new RuntimeException("Id could not be found");
 		}
-		
+
 	}
 
 	@Override
@@ -78,35 +79,33 @@ public class UserServiceImplementation implements UserServiceExtended{
 		Optional<UserEntity> entity=this.userHandler.findById(userSpace+"%"+userEmail);
 		if (entity.isPresent()) {
 			update.setUserId(new UserIdBoundary(userSpace,userEmail));
-			
+
 			UserEntity updatedEntity= this.convertToEntity(update);
 			this.userHandler.save(updatedEntity);
-			
+
 		}else {
 			throw new RuntimeException("id could not be found");
-			
+
 		}
-		
+
 	}
 
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public List<UserBoundary> getAllUsers(String adminSpace, String adminMail, int size,int page) {
-		Optional<UserEntity> User=this.userHandler.findById(adminSpace+"%"+adminMail);
-		if(User.isPresent()) {
-			UserEntity userEn=User.get();
-			if(!(userEn.getRole().equals(UserRole.ADMIN.name()) )) {
-				throw new RuntimeException("The User is not autorizied to do this action");
-			}
-		}else {
-			throw new RuntimeException("Cant find the specific user");
+		//check if user is present and he is admin 
+		if (!checker.CheckAdminUser(adminSpace+"%"+adminMail)){
+			throw new RuntimeException("The User is not autorizied to do this action");
 		}
+		Optional<UserEntity> User=this.userHandler.findById(adminSpace+"%"+adminMail);
+		UserEntity userEn=User.get();
+
 		Iterable<UserEntity> allUsers = this.userHandler.findAll(PageRequest.of(page, size, Direction.ASC, "id"));
 		List<UserBoundary> rv=new ArrayList<>();
 		if (allUsers!=null) {
-		for(UserEntity entity: allUsers)		
-			rv.add(convertToBoundary(entity));
+			for(UserEntity entity: allUsers)		
+				rv.add(convertToBoundary(entity));
 		}else {
 			throw new RuntimeException("Cant find Users");
 		}
@@ -117,19 +116,12 @@ public class UserServiceImplementation implements UserServiceExtended{
 	@Override
 	@Transactional
 	public void deleteAllUsers(String adminSpace, String adminMail) {
-		Optional<UserEntity> userTmp=this.userHandler.findById(adminSpace+"%"+adminMail);
-		if(userTmp.isPresent()) {
-			if(userTmp.get().getRole().equals(UserRole.ADMIN.name()) ) {
-				this.userHandler.deleteAll();
-			}else {
-				throw new RuntimeException("User not Autorizied to do this action");
-			}
-			
-		}else {
-			throw new RuntimeException("User not exist");
+		//check if user is present and he is admin 
+		if (!checker.CheckAdminUser(adminSpace+"%"+adminMail)){
+			throw new RuntimeException("The User is not autorizied to do this action");
 		}
-		
-		
+		//else
+		this.userHandler.deleteAll();
 	}
 
 	private UserEntity convertToEntity(UserBoundary user) {
@@ -140,19 +132,19 @@ public class UserServiceImplementation implements UserServiceExtended{
 		entity.setUserid(user.getUserId().getSpace()+"%"+user.getUserId().getEmail());
 		return entity;
 	}
-	
+
 	private UserBoundary convertToBoundary(UserEntity entity) {
 		UserBoundary boundary=new UserBoundary();
 		boundary.setUserName(entity.getUserName());
 		boundary.setAvatar(entity.getAvatar());
 		boundary.setRole(entity.getRole());
-		
+
 		String [] arrOfStr=entity.getUserid().split("%");//separate to two strings
 		boundary.setUserId(new UserIdBoundary(arrOfStr[0],arrOfStr[1]));
 		return boundary;
 	}
 
-	
+
 	@Override
 	public List<UserBoundary> getAllUsers(String adminSpace, String adminMail) {
 		// STUB IMPLEMENT
@@ -163,6 +155,6 @@ public class UserServiceImplementation implements UserServiceExtended{
 
 
 
-	
-	
+
+
 }

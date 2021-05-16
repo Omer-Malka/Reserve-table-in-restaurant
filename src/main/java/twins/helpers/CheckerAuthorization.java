@@ -1,13 +1,18 @@
 package twins.helpers;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import twins.data.UserEntity;
 import twins.data.UserHandler;
+import twins.data.UserRole;
 
 @Component
 public class CheckerAuthorization {
 	private UserHandler userHandler;
+
 
 	@Autowired
 	public CheckerAuthorization(UserHandler userHandler) {
@@ -19,32 +24,53 @@ public class CheckerAuthorization {
 			return true;
 		return false;
 	}
-	public boolean CheckValidUser(String space,String email) {
+	public boolean CheckValidUser(String id) {
 		//get user from db by space and email and id 
+		Optional<UserEntity> retuUser=userHandler.findById(id);
+		if(retuUser.isPresent()) {
+			return true;
+		}
 		//if user not exist false 
-		return true;
-		
+		return false;
 		
 	}
-	public boolean CheckAdminUser(String userSpace, String userEmail) {
+	public boolean CheckAdminUser(String id) {
 		//get user from db by space and email and id 
-				//if user not exist false 
+		Optional<UserEntity> returUser=userHandler.findById(id);
+		if(!returUser.isPresent())
+			return false;//if user not exist false
+				 
+		UserEntity user=returUser.get();//get object from optional
 		//check if user is admin 
-		//if not -->false 
+		if(!user.getRole().equals(UserRole.ADMIN))
+			return false;//if not -->false 
+		
 		return true ;
 	}
-	public boolean CheckManagerUser(String userSpace, String userEmail) {
+	public boolean CheckManagerUser(String id) {
 		//get user from db by space and email and id 
-				//if user not exist false 
-		//check if user is manager 
-		//if not -->false 
+		Optional<UserEntity> returUser=userHandler.findById(id);
+		if(!returUser.isPresent())
+			return false;//if user not exist false
+				 
+		UserEntity user=returUser.get();//get object from optional
+		//check if user is MANAGER 
+		if(!user.getRole().equals(UserRole.MANAGER))
+			return false;//if not -->false 
+		
 		return true ;
 	}
-	public boolean CheckPlayerUser(String userSpace, String userEmail) {
+	public boolean CheckPlayerUser(String id) {
 		//get user from db by space and email and id 
-				//if user not exist false 
-		//check if user is manager 
-		//if not -->false 
+		Optional<UserEntity> returUser=userHandler.findById(id);
+		if(!returUser.isPresent())
+			return false;//if user not exist false
+				 
+		UserEntity user=returUser.get();//get object from optional
+		//check if user is PLAYER 
+		if(!user.getRole().equals(UserRole.PlAYER))
+			return false;//if not -->false 
+		
 		return true ;
 	}
 
