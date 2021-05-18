@@ -34,6 +34,7 @@ public class UserServiceImplementation implements UserServiceExtended{
 	public UserServiceImplementation(UserHandler userHandler) {
 		super();
 		this.userHandler = userHandler;
+		this.checker=new CheckerAuthorization(this.userHandler);
 
 	}
 

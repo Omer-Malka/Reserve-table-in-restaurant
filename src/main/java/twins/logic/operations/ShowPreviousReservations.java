@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import twins.boundaries.ItemBoundary;
 import twins.data.ItemEntity;
 import twins.data.ItemHandler;
+import twins.data.UserHandler;
 import twins.logic.ItemsServiceImplementation;
 @Component
 public class ShowPreviousReservations {
@@ -16,9 +17,9 @@ public class ShowPreviousReservations {
 	private ItemsServiceImplementation itemsService;
 
 	@Autowired
-	public ShowPreviousReservations(ItemHandler itemHandler) {
+	public ShowPreviousReservations(ItemHandler itemHandler,UserHandler userHandler) {
 		this.itemHandler = itemHandler;
-		this.itemsService = new ItemsServiceImplementation(itemHandler);
+		this.itemsService = new ItemsServiceImplementation(itemHandler,userHandler);
 	}
 	
 	public List<ItemBoundary> showReservations(String email) {

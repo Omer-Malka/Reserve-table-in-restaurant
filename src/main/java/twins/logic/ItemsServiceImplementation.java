@@ -22,6 +22,7 @@ import twins.boundaries.LocationBoundary;
 import twins.boundaries.UserIdBoundary;
 import twins.data.ItemEntity;
 import twins.data.ItemHandler;
+import twins.data.UserHandler;
 import twins.helpers.CheckerAuthorization;
 //import twins.helpers.CheckerAuthorization;
 import twins.helpers.CheckerHelper;
@@ -30,15 +31,16 @@ import twins.helpers.CheckerHelper;
 public class ItemsServiceImplementation implements ItemServiceExtended{
 	private String name;
 	private ItemHandler itemHandler;
+	private UserHandler userHandler;
 //	private ObjectMapper jackson;
 	private CheckerHelper checker;
 	private CheckerAuthorization checkAuth;
 	@Autowired	
-	public ItemsServiceImplementation(ItemHandler itemHandler) {
+	public ItemsServiceImplementation(ItemHandler itemHandler,UserHandler userHandler) {
 		super();
 		this.itemHandler = itemHandler;
 		this.checker = new CheckerHelper();
-		//this.checkAuth=new CheckerAuthorization();
+		this.checkAuth=new CheckerAuthorization(userHandler);
 //		this.jackson = new ObjectMapper();
 	}
 	

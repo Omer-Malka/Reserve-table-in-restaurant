@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import twins.boundaries.ItemBoundary;
 import twins.data.ItemEntity;
 import twins.data.ItemHandler;
+import twins.data.UserHandler;
 import twins.logic.ItemsServiceImplementation;
 
 @Component
@@ -16,8 +17,8 @@ public class InitialTablesMap {
 	private ItemHandler itemHandler;
 	
 	@Autowired
-	public InitialTablesMap(ItemHandler itemHandler) {
-		this.itemService = new ItemsServiceImplementation(itemHandler);
+	public InitialTablesMap(ItemHandler itemHandler,UserHandler userHandler) {
+		this.itemService = new ItemsServiceImplementation(itemHandler,userHandler);
 		this.itemHandler = itemHandler;
 	}
 	

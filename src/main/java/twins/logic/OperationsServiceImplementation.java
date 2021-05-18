@@ -25,6 +25,8 @@ import twins.boundaries.UserIdBoundary;
 import twins.data.ItemHandler;
 import twins.data.OperationEntity;
 import twins.data.OperationHandler;
+import twins.data.UserHandler;
+import twins.helpers.CheckerAuthorization;
 import twins.helpers.CheckerHelper;
 import twins.logic.operations.CancelReservation;
 import twins.logic.operations.Clasp;
@@ -40,6 +42,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	private OperationHandler operationHandler;
 	//private ObjectMapper jackson;
 	private CheckerHelper checker;
+	private CheckerAuthorization checkerAutho; 
 	private ReserveTable reserveTable;
 	private CancelReservation cancelReservation;
 	private Clasp clasp;
@@ -49,8 +52,9 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	private ShowPreviousReservations showPreviousReservations;
 
 	@Autowired	
-	public OperationsServiceImplementation(OperationHandler operationHandler, ItemHandler itemHandler) {
+	public OperationsServiceImplementation(OperationHandler operationHandler, ItemHandler itemHandler,UserHandler userHandler) {
 		this.operationHandler = operationHandler;
+		this.checkerAutho=new CheckerAuthorization(userHandler);
 		this.checker = new CheckerHelper();
 		//this.jackson = new ObjectMapper();
 		this.cancelReservation = new CancelReservation(itemHandler);
@@ -58,8 +62,8 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		this.clasp = new Clasp();
 		this.updateTablesMap = new UpdateTablesMap();
 		this.viewTableMap = new ViewTableMap();
-		this.initialTablesMap = new InitialTablesMap(itemHandler);
-		this.showPreviousReservations = new ShowPreviousReservations(itemHandler);
+		this.initialTablesMap = new InitialTablesMap(itemHandler,userHandler);
+		this.showPreviousReservations = new ShowPreviousReservations(itemHandler,userHandler);
 	}
 
 	@Value("${spring.application.name: 2021b.lidar.ben.david}")
@@ -70,6 +74,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	@Override
 	@Transactional
 	public Object invokeOperation(OperationBoundary operation) {
+
 		//check input 
 		if(!this.checker.checkOperationType(operation.getType())) {
 			throw new RuntimeException("Type can not be null");
@@ -84,6 +89,11 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		}
 		String email = operation.getInvokedBy().getUserId().getEmail();
 		String userSpace = operation.getInvokedBy().getUserId().getSpace();
+
+		//check if user is present and his roll="PLAYER"
+		if (!checkerAutho.CheckPlayerUser(userSpace+'%'+email)) {
+			throw new RuntimeException("User not authorized to do this action");
+		}
 		switch (operation.getType()) {
 		case "cancelReservation":
 			/* operation attributes:
@@ -214,6 +224,10 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
 			throw new RuntimeException("User Id can not be null");
 		}
+		//check if user is present and his roll="PLAYER"
+		if(!this.checkerAutho.CheckPlayerUser(operation.getInvokedBy().getUserId().getSpace()+'%'+operation.getInvokedBy().getUserId().getEmail())) {
+			throw new RuntimeException("User not authorized to do this action");
+		}
 
 		//create new entity ,fill server's fields and save
 		OperationEntity entity = this.convertToEntity(operation);
@@ -230,6 +244,10 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	@Override
 	@Transactional(readOnly = true)
 	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail,int size,int page) {
+		//check if user is present and his roll="ADMIN"
+		if(!checkerAutho.CheckAdminUser(adminSpace+"%"+adminEmail)){
+			throw new RuntimeException("User not authorized to do this action");
+		}
 		List<OperationBoundary> rv = new ArrayList<>(); 
 		Iterable<OperationEntity> allEntities = this.operationHandler.findAll(PageRequest.of(page, size,Direction.ASC,"id"));
 		if(allEntities == null) {
@@ -272,10 +290,14 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	@Override
 	@Transactional
 	public void deleteAllOperations(String adminSpace, String adminEmail) {
+		//check if user is present and his roll="ADMIN"
+		if(!checkerAutho.CheckAdminUser(adminSpace+"%"+adminEmail)){
+			throw new RuntimeException("User not authorized to do this action");
+		}
 		this.operationHandler.deleteAll();
 
 	}
-/*	private String marshall(Object value) {
+	/*	private String marshall(Object value) {
 		try {
 			return this.jackson.writeValueAsString(value);
 		} catch (Exception e) {
@@ -290,7 +312,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			throw new RuntimeException(e);
 		}
 	}
-*/
+	 */
 	@Override
 	public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
 		// TODO Auto-generated method stub
