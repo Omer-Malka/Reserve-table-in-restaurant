@@ -155,7 +155,7 @@ public class AdminControllerTests {
 		newUser.setAvatar("TEST_VALUE");
 		newUser.setEmail("TEST_VALUE");
 		newUser.setRole("TEST_VALUE");
-		newUser.setUserName("TEST_VALUE");
+		newUser.setUsername("TEST_VALUE");
 		UserBoundary response=this.restTemplate.
 				postForObject(this.url[1], newUser, UserBoundary.class);		
 
@@ -202,7 +202,7 @@ public class AdminControllerTests {
 		newAdmin.setAvatar("TEST_VALUE");
 		newAdmin.setEmail("TEST_VALUE");
 		newAdmin.setRole("TEST_VALUE");
-		newAdmin.setUserName("TEST_VALUE");
+		newAdmin.setUsername("TEST_VALUE");
 		UserBoundary response=this.restTemplate.
 				postForObject(this.url[1], newAdmin, UserBoundary.class);	
 		

@@ -39,6 +39,7 @@ public class UserController {
 	public UserBoundary CreateNewUser(
 			@RequestBody NewUserDetails userDetails)
 	{
+		System.err.println(userDetails.getEmail());
 		
 		UserIdBoundary userid=new UserIdBoundary();
 		userid.setEmail(userDetails.getEmail());
@@ -46,7 +47,7 @@ public class UserController {
 		
 		//need to pus space in here
 		UserBoundary userBou=new UserBoundary(userid,userDetails.getRole()
-				,userDetails.getUserName(),userDetails.getAvatar());
+				,userDetails.getUsername(),userDetails.getAvatar());
 				
 		return this.usersService.createUser(userBou);
 		

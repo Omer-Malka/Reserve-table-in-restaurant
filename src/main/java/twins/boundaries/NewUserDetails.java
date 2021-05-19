@@ -12,11 +12,11 @@ public class NewUserDetails {
 	}
 	
 	
-	public NewUserDetails(String email, String role, String userName, String avatar) {
+	public NewUserDetails(String email, String role, String username, String avatar) {
 		this();
 		this.email = email;
 		this.role = role;
-		this.username = userName;
+		this.username = username;
 		this.avatar = avatar;
 	}
 
@@ -32,11 +32,11 @@ public class NewUserDetails {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	public String getUserName() {
+	public String getUsername() {
 		return username;
 	}
-	public void setUserName(String userName) {
-		this.username = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getAvatar() {
 		return avatar;

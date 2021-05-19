@@ -75,7 +75,7 @@ public class UserControllerTests {
 		newUser.setAvatar("testAvatar");
 		newUser.setEmail("test@test.co.il");
 		newUser.setRole("testRoll");
-		newUser.setUserName("test");
+		newUser.setUsername("test");
 		UserBoundary response=this.restTemplet.
 				postForObject(this.url, newUser, UserBoundary.class);
 		
@@ -98,7 +98,7 @@ public class UserControllerTests {
 		newUser.setAvatar("testAvatar");
 		newUser.setEmail("test@test.co.il");
 		newUser.setRole("testRoll");
-		newUser.setUserName("test");
+		newUser.setUsername("test");
 		UserBoundary response=this.restTemplet.
 				postForObject(this.url, newUser, UserBoundary.class);
 		
@@ -119,7 +119,7 @@ public class UserControllerTests {
 		newUser.setAvatar("testAvatar");
 		newUser.setEmail("test@test.co.il");
 		newUser.setRole("testRoll");
-		newUser.setUserName("test");
+		newUser.setUsername("test");
 		UserBoundary response=this.restTemplet.postForObject(this.url,newUser, UserBoundary.class);
 		//when
 		UserBoundary update=new UserBoundary();
