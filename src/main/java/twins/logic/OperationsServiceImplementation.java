@@ -60,7 +60,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		this.cancelReservation = new CancelReservation(itemHandler);
 		this.reserveTable = new ReserveTable(itemHandler);
 		this.clasp = new Clasp();
-		this.updateTablesMap = new UpdateTablesMap();
+		this.updateTablesMap = new UpdateTablesMap(itemHandler);
 		this.viewTableMap = new ViewTableMap();
 		this.initialTablesMap = new InitialTablesMap(itemHandler,userHandler);
 		this.showPreviousReservations = new ShowPreviousReservations(itemHandler,userHandler);
@@ -173,6 +173,15 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			break;
 
 		case "updateTablesMap":
+			String tableNumber = (String) operation.getOperationAttributes().get("tableNumber");
+			String newCapacityOfTable = (String) operation.getOperationAttributes().get("newCapacity");
+			if (!this.updateTablesMap.hasReservation(tableNumber)) {
+				this.updateTablesMap.updateTable(tableNumber, newCapacityOfTable, userSpace, email,
+						operation.getItem().getItemId().getSpace()+"@"+operation.getItem().getItemId().getId());
+			}
+			else {
+				throw new RuntimeException("Can't update the capacity : this table has a reservation");
+			}
 
 			break;
 
