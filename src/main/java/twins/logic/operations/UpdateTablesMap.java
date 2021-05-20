@@ -31,7 +31,7 @@ public class UpdateTablesMap {
 		List<ItemEntity> activeReservations = itemHandler.findAllByTypeAndActive("reservation",true);
 		
 		for(ItemEntity reservation : activeReservations) {
-			if(reservation.getName().contains(tableNumber)) {
+			if(reservation.getName().split("-")[0].equals(tableNumber)) {
 				return true;
 			}
 		}
