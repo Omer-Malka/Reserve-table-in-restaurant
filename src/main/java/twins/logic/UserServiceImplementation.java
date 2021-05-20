@@ -52,7 +52,7 @@ public class UserServiceImplementation implements UserServiceExtended{
 	@Override
 	@Transactional
 	public UserBoundary createUser(UserBoundary user) {
-		if (!checker.CheckValidUser(user.getUserId().getSpace()+"%"+user.getUserId().getEmail())) {
+		if (checker.CheckValidUser(this.name+"%"+user.getUserId().getEmail())) {
 			throw new RuntimeException("User is already exist");
 		}
 		if (user.getUserName() == null|| user.getUserId().getEmail() == null) {
