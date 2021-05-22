@@ -18,19 +18,22 @@ public class CheckerHelper {
 	}
 
 	public boolean checkOperationType(String type) {
-		if(type != null)
+		if(type != null && type!="")
 			return true;
 		return false;
 	}
 	
+	
 	public boolean checkOperationItem(Item item) {
-		if(item.getItemId().getId()!=null && item.getItemId().getSpace()!=null)
+		if(item.getItemId().getId()!=null && item.getItemId().getSpace()!=null && 
+		   item.getItemId().getId()!="" && item.getItemId().getSpace()!="")
 			return true;
 		return false;
 	}
 		
 	public boolean checkOperationInvokeBy(InvokedByBoundary invokeBy) {
-		if(invokeBy.getUserId().getEmail()!=null && invokeBy.getUserId().getSpace()!=null)
+		if(invokeBy.getUserId().getEmail()!=null && invokeBy.getUserId().getSpace()!=null &&
+		   invokeBy.getUserId().getEmail()!="" && invokeBy.getUserId().getSpace()!="")
 			return true;
 		return false;
 	}

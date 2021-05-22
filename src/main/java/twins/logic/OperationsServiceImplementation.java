@@ -77,15 +77,15 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 
 		//check input 
 		if(!this.checker.checkOperationType(operation.getType())) {
-			throw new RuntimeException("Type can not be null");
+			throw new RuntimeException("Type can not be null or empty String");
 		}
-
+		
 		if(!this.checker.checkOperationItem(operation.getItem())) {
-			throw new RuntimeException("Item can not be null");
+			throw new RuntimeException("Item can not be null or empty String");
 		}
 
 		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
-			throw new RuntimeException("User Id can not be null");
+			throw new RuntimeException("User Id can not be null or empty String");
 		}
 		String email = operation.getInvokedBy().getUserId().getEmail();
 		String userSpace = operation.getInvokedBy().getUserId().getSpace();
