@@ -59,7 +59,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		//this.jackson = new ObjectMapper();
 		this.cancelReservation = new CancelReservation(itemHandler);
 		this.reserveTable = new ReserveTable(itemHandler);
-		this.clasp = new Clasp();
+		this.clasp = new Clasp(itemHandler);
 		this.updateTablesMap = new UpdateTablesMap(itemHandler);
 		this.viewTableMap = new ViewTableMap();
 		this.initialTablesMap = new InitialTablesMap(itemHandler,userHandler);
