@@ -239,32 +239,4 @@ public class OperationControllerTests {
 			//Do nothing
 	}
 
-
-//	@Test
-//	public void testPostOperationAndReturnsStatus2xx() throws Exception {
-//		//GIVEN the server is up
-//		//Do nothing
-//
-//		//WHEN I invoke POST /operation with {item=null}
-//		for (int i = 0; i < SIZE; i++) {
-//			OperationBoundary operation = new OperationBoundary();
-//			operation.setType(TEST_VALUE);
-//			operation.setInvokedBy(new InvokedByBoundary(new UserIdBoundary(TEST_VALUE, TEST_VALUE)));
-//			operation.setItem(new Item(new ItemIdBoundary(TEST_VALUE, TEST_VALUE)));
-//			operation.setOperationAttributes(new HashMap<>());
-//
-//			//		assertThrows(Exception.class, ()->{
-//			//			this.restTemplate
-//			//		17	.postForObject(this.url, operation, ItemBoundary.class);
-//			//		});
-//
-//			//THEN the server returns status 2xx
-//			//Do nothing
-//		}
-//	}
-//	@Test
-//	public void testPostOperationStoredInDB() throws Exception {
-//		
-//	}
-
 }

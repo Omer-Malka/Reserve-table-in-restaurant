@@ -169,7 +169,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			break;
 
 		case "clasp":
-
+			this.clasp.Clasp_CancelAllReservation();
 			break;
 
 		case "updateTablesMap":
@@ -223,15 +223,15 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	public OperationBoundary invokeAsynchronousOperation(OperationBoundary operation) {
 		//check input 
 		if(!this.checker.checkOperationType(operation.getType())) {
-			throw new RuntimeException("Type can not be null");
+			throw new RuntimeException("Type can not be null or empty String");
 		}
 
 		if(!this.checker.checkOperationItem(operation.getItem())) {
-			throw new RuntimeException("Item can not be null");
+			throw new RuntimeException("Item can not be null or empty String");
 		}
 
 		if(!this.checker.checkOperationInvokeBy(operation.getInvokedBy())) {
-			throw new RuntimeException("User Id can not be null");
+			throw new RuntimeException("User Id can not be null or empty String");
 		}
 		//check if user is present and his roll="PLAYER"
 		if(!this.checkerAutho.CheckPlayerUser(operation.getInvokedBy().getUserId().getSpace()+'%'+operation.getInvokedBy().getUserId().getEmail())) {
