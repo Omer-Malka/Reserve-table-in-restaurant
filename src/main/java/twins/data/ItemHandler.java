@@ -41,6 +41,11 @@ public interface ItemHandler extends MongoRepository<ItemEntity, String> {
 	public List<ItemEntity> findAllByUserEmailAndType(
 			@Param("email")String email, 
 			@Param("type")String type);
+	
+	public List<ItemEntity> findAllByEmail(
+			@Param("email") String email,
+			Pageable pageable);
+			
 
 
 }

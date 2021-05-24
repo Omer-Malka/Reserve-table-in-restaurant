@@ -55,9 +55,14 @@ public class UserServiceImplementation implements UserServiceExtended{
 		if (checker.CheckValidUser(this.name+"%"+user.getUserId().getEmail())) {
 			throw new RuntimeException("User is already exist");
 		}
-		if (user.getUserName() == null|| user.getUserId().getEmail() == null) {
-			throw new RuntimeException("Email and username must not be null");
+		if (user.getUserId().getEmail() == null) {
+			throw new RuntimeException("Email must not be null");
 		}
+		if (user.getUserName() == null) {
+			throw new RuntimeException("username must not be null");
+		}
+		
+		
 		UserEntity entity= this.convertToEntity(user);
 		entity.setUserid(this.name+"%"+user.getUserId().getEmail());
 		entity=this.userHandler.save(entity);
