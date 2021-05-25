@@ -59,7 +59,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		this.reserveTable = new ReserveTable(itemHandler);
 		this.clasp = new Clasp(itemHandler);
 		this.updateTablesMap = new UpdateTablesMap(itemHandler);
-		this.viewTableMap = new ViewTableMap();
+		this.viewTableMap = new ViewTableMap(itemHandler, userHandler);
 		this.initialTablesMap = new InitialTablesMap(itemHandler,userHandler);
 		this.showPreviousReservations = new ShowPreviousReservations(itemHandler,userHandler);
 	}
@@ -184,8 +184,8 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			break;
 
 		case "viewTableMap":
-			/*List<ItemBoundary> reservations = this.viewTableMap.getAllItemsByPlayer(email);
-			operation.getOperationAttributes().put("reservation", reservations);*/
+			List<ItemBoundary> reservations = this.viewTableMap.getAllItemsByPlayer(email, 20, 0);
+			operation.getOperationAttributes().put("reservation", reservations);
 			break;
 			
 
