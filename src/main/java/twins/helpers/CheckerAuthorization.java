@@ -42,7 +42,7 @@ public class CheckerAuthorization {
 				 
 		UserEntity user=returUser.get();//get object from optional
 		//check if user is admin 
-		if(!user.getRole().equals(UserRole.ADMIN))
+		if(!user.getRole().equalsIgnoreCase(UserRole.ADMIN.name()))
 			return false;//if not -->false 
 		
 		return true ;
@@ -50,14 +50,16 @@ public class CheckerAuthorization {
 	public boolean CheckManagerUser(String id) {
 		//get user from db by space and email and id 
 		Optional<UserEntity> returUser=userHandler.findById(id);
-		if(!returUser.isPresent())
+		if(!returUser.isPresent()) {
+			System.out.println("no user");
 			return false;//if user not exist false
+		}
 				 
 		UserEntity user=returUser.get();//get object from optional
 		//check if user is MANAGER 
-		if(!user.getRole().equals(UserRole.MANAGER))
-			return false;//if not -->false 
-		
+		if(!user.getRole().equals(UserRole.MANAGER.name())) {
+			return false;//if not -->false 		
+		}
 		return true ;
 	}
 	public boolean CheckPlayerUser(String id) {
@@ -68,8 +70,11 @@ public class CheckerAuthorization {
 				 
 		UserEntity user=returUser.get();//get object from optional
 		//check if user is PLAYER 
-		if(!user.getRole().equals(UserRole.PlAYER))
+		if(!user.getRole().equalsIgnoreCase(UserRole.PlAYER.name())) {
+			System.out.println(user.getRole());
+			System.out.println(UserRole.PlAYER.name());
 			return false;//if not -->false 
+		}
 		
 		return true ;
 	}
