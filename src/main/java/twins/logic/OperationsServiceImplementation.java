@@ -28,7 +28,6 @@ import twins.helpers.CheckerAuthorization;
 import twins.helpers.CheckerHelper;
 import twins.logic.operations.CancelReservation;
 import twins.logic.operations.Clasp;
-import twins.logic.operations.InitialTablesMap;
 import twins.logic.operations.ReserveTable;
 import twins.logic.operations.ShowPreviousReservations;
 import twins.logic.operations.UpdateTablesMap;
@@ -46,7 +45,6 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 	private Clasp clasp;
 	private UpdateTablesMap updateTablesMap;
 	private ViewTableMap viewTableMap;
-	private InitialTablesMap initialTablesMap;
 	private ShowPreviousReservations showPreviousReservations;
 
 	@Autowired	
@@ -60,7 +58,6 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		this.clasp = new Clasp(itemHandler);
 		this.updateTablesMap = new UpdateTablesMap(itemHandler);
 		this.viewTableMap = new ViewTableMap(itemHandler, userHandler);
-		this.initialTablesMap = new InitialTablesMap(itemHandler,userHandler);
 		this.showPreviousReservations = new ShowPreviousReservations(itemHandler,userHandler);
 	}
 
@@ -187,16 +184,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			List<ItemBoundary> reservations = this.viewTableMap.getAllItemsByPlayer(email, 20, 0);
 			operation.getOperationAttributes().put("reservation", reservations);
 			break;
-			
 
-		case "initialTablesMap":
-			/* operation attributes:
-			 * tableNumber: String 
-			 * capacity: String
-			 */
-			this.initialTablesMap.storeTable(operation.getOperationAttributes(), userSpace, email,
-					operation.getItem().getItemId().getSpace()+"@"+operation.getItem().getItemId().getId());
-			break;
 		case "showPreviousReservations":
 			/* operation attributes:
 			 * previousReservations: List<ItemBoundary> prevoiusReservations ->after invoking
