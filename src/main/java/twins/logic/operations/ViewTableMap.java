@@ -26,11 +26,11 @@ public class ViewTableMap {
 
 	}
 
-	public List<ItemBoundary> getAllItemsByPlayer(String userEmail, int size, int page) {
-		Page<ItemEntity> activeReservations = itemHandler.findAllByUserSpaceAndUserEmail(userEmail, "2021b.lidar.ben.david",  PageRequest.of(page, size, Direction.ASC, "timestamp"));
+	public List<ItemBoundary> getAllItemsByPlayer() {
+		List<ItemEntity> tables = itemHandler.findAllByType("Table");
 		List<ItemBoundary> rv = new ArrayList<>();
-		for (ItemEntity reservation : activeReservations) {
-			rv.add(this.itemsService.convertToBoundary(reservation));
+		for (ItemEntity table : tables) {
+			rv.add(this.itemsService.convertToBoundary(table));
 		}
 		return rv;
 	}

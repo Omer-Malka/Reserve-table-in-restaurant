@@ -19,7 +19,7 @@ public class UpdateTablesMap {
 	public void updateTable(String tableNumber,String newCapacity,  String userSpace, String userEmail, String itemId) {
 		List<ItemEntity> tables = itemHandler.findAllByType("Table");
 		for (ItemEntity table : tables) {
-			if (table.getItemAttributes().get("name").equals(tableNumber)) {
+			if (table.getName().equals(tableNumber)) {
 				table.getItemAttributes().put("capacity", newCapacity);
 				this.itemHandler.save(table);
 			}

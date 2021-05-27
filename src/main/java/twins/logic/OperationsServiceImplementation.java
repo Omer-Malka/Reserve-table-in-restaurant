@@ -84,6 +84,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		}
 		String email = operation.getInvokedBy().getUserId().getEmail();
 		String userSpace = operation.getInvokedBy().getUserId().getSpace();
+		String type = operation.getType();
 
 		//check if user is present and his roll="PLAYER"
 		if (!checkerAutho.CheckPlayerUser(userSpace+'%'+email)) {
@@ -181,8 +182,8 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			break;
 
 		case "viewTableMap":
-			List<ItemBoundary> reservations = this.viewTableMap.getAllItemsByPlayer(email, 20, 0);
-			operation.getOperationAttributes().put("reservation", reservations);
+			List<ItemBoundary> tables1 = this.viewTableMap.getAllItemsByPlayer();
+			operation.getOperationAttributes().put("tables", tables1);
 			break;
 
 		case "showPreviousReservations":
