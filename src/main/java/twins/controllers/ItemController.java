@@ -66,6 +66,7 @@ public class ItemController {
 			path="/twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}", 
 			method = RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin(origins = "http://localhost:3000")
 	public void UpdateItem(
 			@RequestBody ItemBoundary update,
 			@PathVariable("userSpace") String userSpace,
