@@ -27,10 +27,11 @@ public class ItemController {
 			path="/twins/items/{userSpace}/{userEmail}", 
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin(origins = "http://localhost:3000")
 	public ItemBoundary[] getItemsOfSpecificUser(
 			@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail,
-			@RequestParam(name="size", required = false, defaultValue = "20") int size,
+			@RequestParam(name="size", required = false, defaultValue = "60") int size,
 			@RequestParam(name="page", required = false, defaultValue = "0") int page){
 		List<ItemBoundary> allItems=itemService.getAllItems(userSpace, userEmail, size, page);
 		return allItems.toArray(new ItemBoundary[0]);

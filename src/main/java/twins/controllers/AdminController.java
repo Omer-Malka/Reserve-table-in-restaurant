@@ -49,7 +49,7 @@ public class AdminController {
 	public OperationBoundary[] getAllOperations(
 			@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail,
-			@RequestParam(name="size",required=false,defaultValue="20")int size,
+			@RequestParam(name="size",required=false,defaultValue="120")int size,
 			@RequestParam(name="page",required=false,defaultValue="0")int page){
 		List<OperationBoundary> allOperations = this.operationsService.getAllOperations(userSpace, userEmail,size,page);
 

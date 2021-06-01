@@ -185,6 +185,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			List<ItemBoundary> tables1 = this.viewTableMap.getAllItemsByPlayer();
 			operation.getOperationAttributes().put("tables", tables1);
 			break;
+			
 
 		case "showPreviousReservations":
 			/* operation attributes:

@@ -126,7 +126,7 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 	@Transactional(readOnly = true)
 	public List<ItemBoundary> getAllItems(String userSpace, String userEmail, int size, int page) {
 		//check if the user is manager
-		if(checkAuth.CheckManagerUser(userSpace+"%"+userEmail)||checkAuth.CheckPlayerUser(userSpace+"%"+userEmail))
+		if(checkAuth.CheckPlayerUser(userSpace+"%"+userEmail))
 			throw new RuntimeException("User not authorized to do this action");
 		
 		//if yes 
