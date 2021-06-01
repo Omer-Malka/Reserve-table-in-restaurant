@@ -84,7 +84,6 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 		}
 		String email = operation.getInvokedBy().getUserId().getEmail();
 		String userSpace = operation.getInvokedBy().getUserId().getSpace();
-		String type = operation.getType();
 
 		//check if user is present and his roll="PLAYER"
 		if (!checkerAutho.CheckPlayerUser(userSpace+'%'+email)) {
@@ -95,7 +94,7 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			/* operation attributes:
 			 * option : String -> cancelAllPassedReservation for the automatic deleting
 			 * time: String -> "12-14-13-05"(hourStart-hourEnd-day-month) ->must
-			 * name: String ->must
+			 * tableNum: string ->must
 			 */
 			String option = (String)operation.getOperationAttributes().get("option");
 			if(!this.checker.checkInputString(option))
@@ -107,13 +106,12 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 				this.cancelReservation.cancelAllPassedReservation(date);
 			}
 			else {
-				String name = (String)operation.getOperationAttributes().get("name");
 				String timeOfRes = (String)operation.getOperationAttributes().get("time");
-				if(!this.checker.checkInputString(name)
-						&&!this.checker.checkInputString(timeOfRes)){
+				String tableNum = (String)operation.getOperationAttributes().get("tableNum");
+				if(!this.checker.checkInputString(timeOfRes)){
 					throw new RuntimeException("attributes can't be null");
 				}
-				this.cancelReservation.cancelReservation(name, timeOfRes, email);
+				this.cancelReservation.cancelReservation(timeOfRes, email, tableNum);
 			}
 			break;
 
@@ -148,15 +146,16 @@ public  class OperationsServiceImplementation implements OperationsServiceExtend
 			 * capacity: String
 			 * newTime: String(hourStart-hourEnd-day-month)
 			 * oldTime: String(hourStart-hourEnd-day-month)
-			 * name: String
+			 * tableNum: string
 			 */
+			String tableNum = (String) operation.getOperationAttributes().get("tableNum");
 			String newCapacity = (String) operation.getOperationAttributes().get("capacity");
 			String newTime = (String) operation.getOperationAttributes().get("newTime");
 			String oldTime = (String) operation.getOperationAttributes().get("oldTime");
 			String nameOfChanger = (String) operation.getOperationAttributes().get("name");
 			ArrayList<String> tables = this.reserveTable.findTables(newCapacity, newTime);
 			if(!tables.isEmpty()) {
-				this.cancelReservation.cancelReservation(nameOfChanger, oldTime, email);
+				this.cancelReservation.cancelReservation(oldTime, email, tableNum);
 				this.reserveTable.reserve(newCapacity, nameOfChanger, tables.get(0), newTime, userSpace, email, this.name);
 			}
 			else {

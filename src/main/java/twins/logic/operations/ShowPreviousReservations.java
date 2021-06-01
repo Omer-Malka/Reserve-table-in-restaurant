@@ -23,7 +23,7 @@ public class ShowPreviousReservations {
 	}
 	
 	public List<ItemBoundary> showReservations(String email) {
-		List<ItemEntity> entities = itemHandler.findAllByUserEmailAndType(email, "reservation");
+		List<ItemEntity> entities = itemHandler.findAllByUserEmailAndTypeAndActive(email, "reservation", true);
 		List<ItemBoundary> rv = new ArrayList<>();
 		for(ItemEntity entity: entities) {
 			rv.add(this.itemsService.convertToBoundary(entity));

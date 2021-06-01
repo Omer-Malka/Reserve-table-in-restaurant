@@ -25,10 +25,10 @@ public class CancelReservation {
 		}
 	}
 	
-	public boolean cancelReservation(String name, String time, String email) {
+	public boolean cancelReservation(String time, String email, String tableNum) {
 		List<ItemEntity> reservations = this.itemHandler.findAllByUserEmailAndActiveAndTypeAndNameLike(email, true, "reservation", time);
 		for(ItemEntity reservation : reservations) {
-			if(reservation.getItemAttributes().get("name").equals(name)) {
+			if(reservation.getName().split("-")[0].equals(tableNum)) {
 				reservation.setActive(false);
 				itemHandler.save(reservation);
 				return true;
