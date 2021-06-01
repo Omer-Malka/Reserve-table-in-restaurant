@@ -95,9 +95,7 @@ public class ItemsServiceImplementation implements ItemServiceExtended{
 				&& this.checker.checkInputString(update.getName()) 
 				&& this.checker.checkInputString(update.getType())) {
 			update.setItemId(new ItemIdBoundary(this.name, itemId));
-			System.err.println(update.getItemAttributes().get(itemId));
 			ItemEntity toUpdate = this.convertToEntity(update);
-			System.err.println(toUpdate.getItemAttributes().get("capacity"));
 			toUpdate.setUserSpace(itemOp.get().getUserSpace());
 			toUpdate.setUserEmail(itemOp.get().getUserEmail());
 			//generate id + timestamp
